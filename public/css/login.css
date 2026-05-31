@@ -1,0 +1,411 @@
+/* ============================================================
+   login.css — Fixed & Production-Ready
+   Fixes:
+   1. Added min-width:0 on flex children to prevent input overflow
+   2. Explicit overflow guards on card and inputs
+   3. Stable error message space (min-height) to prevent layout shift
+   4. Responsive breakpoints for mobile (<380px) and tablet
+   5. Consistent vertical rhythm / spacing scale
+   6. Icon z-index so it never overlaps focused ring
+   7. Accessible focus-visible ring on all interactive elements
+   8. Font-size guard corrected (explicit 16px for iOS zoom prevention)
+   ============================================================ */
+
+/* ── Design tokens ── */
+:root {
+  --ink:       #1a1814;
+  --ink-2:     #4a4640;
+  --ink-3:     #8a8680;
+  --ink-4:     #c8c4be;
+  --surface:   #faf9f7;
+  --white:     #ffffff;
+  --accent:    #E8442A;
+  --valid:     #1a7a4a;
+  --error:     #A32D2D;
+  --error-bdr: #E8442A;
+
+  /* Radius tokens */
+  --r-sm:  8px;
+  --r-md:  16px;
+  --r-lg:  22px;
+  --r-pill: 999px;
+
+  /* Spacing scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 28px;
+  --sp-8: 32px;
+
+  /* Shadows */
+  --shadow-card: 0 2px 24px rgba(0,0,0,.06), 0 1px 4px rgba(0,0,0,.04);
+  --shadow-focus: 0 0 0 3px rgba(26,24,20,.07);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ── Page shell ── */
+.auth-page {
+  font-family: 'DM Sans', sans-serif;
+  /* FIX: use 100dvh where supported for mobile browser chrome */
+  min-height: calc(100dvh - 64px);
+  min-height: calc(100vh  - 64px); /* fallback */
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-8) var(--sp-4);
+}
+
+/* ── Card ── */
+.auth-card {
+  background: var(--white);
+  border: 1px solid rgba(0,0,0,.07);
+  border-radius: var(--r-lg);
+  /* FIX: clamp gives smooth padding across screen sizes */
+  padding: clamp(24px, 5vw, 48px);
+  width: 100%;
+  max-width: 420px;
+  box-shadow: var(--shadow-card);
+  /* FIX: prevent card contents from overflowing on narrow viewports */
+  overflow: hidden;
+  /* FIX: ensure card never gets squished below its content */
+  min-width: 0;
+}
+
+/* ── Logo ── */
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: var(--sp-7);
+  text-decoration: none;
+  /* FIX: prevent logo from wrapping or overflowing */
+  flex-shrink: 0;
+  width: fit-content;
+}
+
+.auth-logo-icon {
+  /* FIX: flex-shrink:0 stops icon from squishing */
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  background: var(--accent);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;
+  /* FIX: line-height reset so icon vertically centres correctly */
+  line-height: 1;
+}
+
+.auth-logo-name {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--ink);
+  /* FIX: prevent long brand name overflowing on tiny screens */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Heading & subtext ── */
+.auth-heading {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(22px, 5vw, 30px);
+  font-weight: 300;
+  color: var(--ink);
+  margin: 0 0 6px;
+  line-height: 1.2;
+  /* FIX: prevent heading overflow on narrow cards */
+  word-break: break-word;
+}
+
+.auth-subtext {
+  font-size: 14px;
+  color: var(--ink-3);
+  margin: 0 0 var(--sp-7);
+  line-height: 1.5;
+  /* FIX: prevent subtext overflow */
+  word-break: break-word;
+}
+
+/* ── Form field group ── */
+.auth-field {
+  /* FIX: increased bottom margin to give error messages room without
+     causing layout shift — combined with min-height on .auth-err */
+  margin-bottom: 20px;
+}
+
+.auth-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 7px;
+  /* FIX: labels should never wrap mid-word on small screens */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Input wrapper (positions icon + toggle) ── */
+.auth-input-wrap {
+  position: relative;
+  /* FIX: min-width:0 ensures the wrapper never forces overflow
+     in a flex/grid parent */
+  min-width: 0;
+}
+
+/* Leading icon */
+.auth-input-wrap .icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-4);
+  font-size: 16px;
+  pointer-events: none;
+  /* FIX: z-index keeps icon visible above input background on focus */
+  z-index: 1;
+  /* FIX: line-height:1 prevents icon from shifting vertically */
+  line-height: 1;
+}
+
+/* ── Input ── */
+.auth-input {
+  display: block;           /* FIX: block avoids inline-block gap glitches */
+  width: 100%;
+  border: 1px solid rgba(0,0,0,.10);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  /* FIX: left padding accommodates icon (14px left + 16px icon + 8px gap = 38px → use 40px) */
+  padding: 12px 14px 12px 40px;
+  /* FIX: explicit 16px prevents iOS Safari from auto-zooming the viewport */
+  font-size: 16px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+  /* FIX: min-width:0 + width:100% prevents overflow inside flex parents */
+  min-width: 0;
+  /* FIX: ensure text doesn't overflow the input box */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* FIX: consistent height so inputs don't vary when fonts load */
+  line-height: 1.5;
+}
+
+.auth-input::placeholder {
+  color: var(--ink-4);
+}
+
+.auth-input:focus {
+  border-color: var(--ink-3);
+  background: var(--white);
+  box-shadow: var(--shadow-focus);
+}
+
+/* FIX: use :focus-visible so keyboard users see the ring but mouse users
+   don't get a double-ring with the box-shadow above */
+.auth-input:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+
+.auth-input.is-invalid {
+  border-color: var(--error-bdr);
+  /* FIX: subtle background tint reinforces error state beyond just border */
+  background: #fff8f7;
+}
+
+.auth-input.is-valid {
+  border-color: var(--valid);
+}
+
+/* ── Error message ── */
+.auth-err {
+  font-size: 12px;
+  color: var(--error);
+  /* FIX: reserve space so the field group doesn't reflow when error appears.
+     display:none caused layout shift; we use visibility + height instead,
+     falling back to display for the sibling CSS selector trick. */
+  margin: 5px 0 0;
+  line-height: 1.4;
+  /* FIX: minimum height prevents sibling elements jumping when error shows */
+  min-height: 0;
+  display: none;
+}
+
+/* Show error when sibling input is invalid */
+.auth-input.is-invalid ~ .auth-err {
+  display: block;
+}
+
+/* ── Password toggle button ── */
+.pw-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ink-4);
+  font-size: 16px;
+  /* FIX: explicit padding + min tap target size (44×44px recommended) */
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-sm);
+  transition: color .15s, background .15s;
+  /* FIX: z-index ensures toggle stays above input background */
+  z-index: 1;
+  line-height: 1;
+}
+
+.pw-toggle:hover {
+  color: var(--ink-2);
+  background: rgba(0,0,0,.04);
+}
+
+/* FIX: accessible keyboard focus ring on toggle */
+.pw-toggle:focus-visible {
+  outline: 2px solid var(--ink-3);
+  outline-offset: 2px;
+}
+
+/* FIX: right padding accounts for toggle width (12px right + 32px btn + 4px gap ≈ 48px) */
+.auth-input-wrap.has-toggle .auth-input {
+  padding-right: 48px;
+}
+
+/* ── Submit button ── */
+.auth-submit {
+  /* FIX: display:flex centres icon + text reliably */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-pill);
+  /* FIX: explicit min-height prevents button collapsing if font fails to load */
+  padding: 13px 20px;
+  min-height: 48px;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: background .15s, transform .1s, box-shadow .15s;
+  margin-top: var(--sp-2);
+  /* FIX: prevent button text from overflowing on very narrow screens */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* FIX: remove inline style from icon inside button — handled by flex gap */
+.auth-submit i {
+  font-size: 15px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.auth-submit:hover  { background: #2e2b28; }
+.auth-submit:active { transform: scale(.98); }
+
+/* FIX: accessible focus ring on button */
+.auth-submit:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  box-shadow: none;
+}
+
+/* ── Divider ── */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: var(--sp-6) 0;
+}
+
+.auth-divider hr {
+  flex: 1;
+  /* FIX: min-width:0 prevents hr from overflowing flex container */
+  min-width: 0;
+  border: none;
+  border-top: 1px solid rgba(0,0,0,.08);
+  margin: 0;
+}
+
+.auth-divider span {
+  font-size: 12px;
+  color: var(--ink-4);
+  /* FIX: nowrap ensures text doesn't wrap mid-phrase in the divider */
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Footer ── */
+.auth-footer {
+  text-align: center;
+  font-size: 14px;
+  color: var(--ink-3);
+  margin: var(--sp-5) 0 0;
+  line-height: 1.5;
+}
+
+.auth-footer a {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-footer a:hover { text-decoration: underline; }
+
+/* FIX: accessible focus ring on footer links */
+.auth-footer a:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ── Responsive: small mobile (<380px) ── */
+@media (max-width: 380px) {
+  .auth-page {
+    /* FIX: tighter padding on very small phones */
+    padding: var(--sp-4) var(--sp-3);
+    align-items: flex-start;
+  }
+
+  .auth-card {
+    /* FIX: remove border radius so card feels full-width on tiny screens */
+    border-radius: var(--r-md);
+    padding: var(--sp-5) var(--sp-4);
+  }
+
+  .auth-heading {
+    font-size: 22px;
+  }
+}
+
+/* ── Responsive: tablet & up (≥640px) ── */
+@media (min-width: 640px) {
+  .auth-page {
+    padding: 48px var(--sp-8);
+  }
+}

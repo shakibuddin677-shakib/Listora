@@ -1,0 +1,151 @@
+
+body{
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container{
+    flex: 1;
+}
+
+.navbar{
+    height: 5rem;
+    background-color: white;
+}
+
+.fa-compass{
+    color: #fe424d;
+    font-size: 2rem;
+}
+.nav-link{
+    color: #222222 !important;
+}
+
+/* Footer */
+.f-info-links a {
+    text-decoration: none;
+    color: #222222;
+}
+.f-info-links a:hover {
+    text-decoration: underline;
+}
+
+.f-info-links, 
+.f-info-socials,
+.f-info-brand {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.f-info-socials{
+    font-size: 1.2rem;
+    margin-right: 1rem;
+}
+
+
+.f-info {
+    height: 6rem;
+    text-align: center;
+    background-color: #ebebeb;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: space-evenly;
+}
+
+/* Cards */
+.card {
+    border: none !important;
+    margin-bottom: 2rem;
+}
+
+.card-img-top{
+    border-radius: 1rem !important;
+    width: 100% !important;
+    object-fit: cover !important;
+}
+.card-body{
+    padding: 0 !important;
+}
+.card-body p{
+    font-weight: 400 !important;
+}
+/* Card Effect */
+.card-img-overlay{
+    opacity: 0;
+}
+.card-img-overlay:hover{
+    opacity: 0.2 ;
+    background-color: white;
+}
+
+/* New page */
+.add-btn {
+    background-color: #fe424d !important;
+    border: none !important;
+}
+
+/* Edit page */
+.edit-btn {
+    background-color: #fe424d !important;
+    border: none !important;
+}
+/* Show image */
+.show-img{
+    width: 100%;
+  height: 300px;        /* you can adjust */
+  object-fit: contain;  /* THIS is the key */
+  background-color: #f8f8f8; /* optional: fills empty space nicely */
+}
+
+.btns{
+    display: flex ;
+}
+
+.show-card{
+    padding-left: 0;
+    padding-right: 0;
+}
+/*  review menu */
+.review-card{
+  transition: 0.3s ease;
+}
+
+.review-card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 1rem 2rem rgba(0,0,0,.08)!important;
+}
+
+.nav-premium-link{
+    font-weight: 500;
+    transition: 0.3s ease;
+}
+
+.nav-premium-link:hover{
+    color: #fe424d !important;
+}
+
+@media (max-width: 991px){
+
+    .navbar-nav{
+        gap: 0.5rem !important;
+    }
+
+    .nav-link{
+        padding-left: 0.5rem;
+    }
+
+    .btn{
+        width: 100%;
+    }
+
+    .navbar-collapse{
+        background-color: white;
+        padding: 1rem;
+        border-radius: 1rem;
+    }
+}

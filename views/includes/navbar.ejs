@@ -1,0 +1,303 @@
+
+<!-- ── MAIN NAV BAR ── -->
+<nav class="navbar navbar-expand-lg sticky-top" id="mainNavbar">
+  <div class="container">
+
+    <!-- BRAND LOGO -->
+    <a class="navbar-brand" href="/">
+      <i class="fa-regular fa-compass"></i>
+      <span>Listora</span>
+    </a>
+
+    <!-- MOBILE: dark toggle + hamburger side by side -->
+    <div class="d-flex align-items-center gap-2 d-lg-none">
+      <button class="dark-toggle" id="darkToggleMobile" onclick="toggleDarkMode()" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon" id="darkIconMobile"></i>
+      </button>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+
+    <!-- COLLAPSIBLE CONTENT -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+
+      <!-- Left nav links -->
+      <ul class="navbar-nav me-auto gap-1">
+        
+        <li class="nav-item">
+          <a class="nav-link" href="/listings">Explore</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/listings/new">
+            <i class="fa-solid fa-plus me-1"></i>Add Listing
+          </a>
+        </li>
+      </ul>
+
+      <!-- Right: dark toggle + auth -->
+      <ul class="navbar-nav align-items-lg-center gap-2">
+
+        <!-- Dark mode toggle — desktop only (mobile version is above) -->
+        <li class="nav-item d-none d-lg-flex align-items-center">
+          <button class="dark-toggle" id="darkToggleDesktop" onclick="toggleDarkMode()" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon" id="darkIconDesktop"></i>
+          </button>
+        </li>
+
+        <% if (!currUser) { %>
+
+          <!-- NOT logged in: Sign Up + Login -->
+          <li class="nav-item">
+            <a class="nav-link nav-signup-link" href="/signup">Sign Up</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-nav-login" href="/login">Log In</a>
+          </li>
+
+        <% } else { %>
+
+          <!-- LOGGED IN: Wishlist icon + user dropdown -->
+
+          <!-- Wishlist shortcut -->
+          <li class="nav-item">
+            <a class="nav-icon-btn" href="/wishlist" aria-label="Wishlist">
+              <i class="fa-regular fa-heart"></i>
+            </a>
+          </li>
+
+          <!-- User avatar dropdown -->
+          <li class="nav-item dropdown">
+            <!--
+              data-bs-toggle="dropdown" opens Bootstrap's dropdown menu.
+              The avatar shows the first letter of the username.
+            -->
+            <button
+              class="nav-avatar-btn"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              aria-label="User menu"
+            >
+              <!-- Avatar circle with first letter of username -->
+              <span class="nav-avatar-letter">
+                <%= currUser.username.charAt(0).toUpperCase() %>
+              </span>
+              <span class="nav-avatar-name d-none d-xl-inline">
+                <%= currUser.username %>
+              </span>
+              <i class="fa-solid fa-chevron-down nav-avatar-chevron"></i>
+            </button>
+
+            <!-- Dropdown menu items -->
+            <ul class="dropdown-menu dropdown-menu-end nav-dropdown">
+              <li class="nav-dropdown-header">
+                Signed in as <strong><%= currUser.username %></strong>
+              </li>
+              <li><hr class="dropdown-divider nav-divider"></li>
+              <li>
+                <a class="dropdown-item nav-dropdown-item" href="/listings/new">
+                  <i class="fa-solid fa-plus"></i> Add Listing
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item nav-dropdown-item" href="/wishlist">
+                  <i class="fa-regular fa-heart"></i> Wishlist
+                </a>
+              </li>
+              <li><hr class="dropdown-divider nav-divider"></li>
+              <li>
+                <a class="dropdown-item nav-dropdown-item nav-dropdown-logout" href="/logout">
+                  <i class="fa-solid fa-right-from-bracket"></i> Log Out
+                </a>
+              </li>
+            </ul>
+          </li>
+
+        <% } %>
+
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+  <div class="container">
+
+    <!-- ── Main Search Bar ── -->
+    <form action="/listings" method="GET" class="search-bar-form" id="searchForm">
+
+      <div class="search-bar">
+
+        <!-- Location input -->
+        <div class="search-field search-field-location">
+          <label class="search-field-label">Where</label>
+          <input
+            type="text"
+            name="search"
+            class="search-field-input"
+            placeholder="Search destinations..."
+            value="<%= typeof search !== 'undefined' ? search : '' %>"
+            autocomplete="off"
+            id="searchInput"
+          />
+        </div>
+
+        <!-- Divider -->
+        <div class="search-divider"></div>
+
+        <!-- Price range -->
+        <div class="search-field search-field-price">
+          <label class="search-field-label">Max Price</label>
+          <select name="maxPrice" class="search-field-input search-select">
+            <option value="">Any price</option>
+            <option value="1000">Under ₹1,000</option>
+            <option value="3000">Under ₹3,000</option>
+            <option value="5000">Under ₹5,000</option>
+            <option value="10000">Under ₹10,000</option>
+          </select>
+        </div>
+
+        <!-- Divider -->
+        <div class="search-divider"></div>
+
+        <!-- Sort by -->
+        <div class="search-field search-field-sort">
+          <label class="search-field-label">Sort By</label>
+          <select name="sort" class="search-field-input search-select">
+            <option value="">Relevance</option>
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+            <option value="newest">Newest First</option>
+          </select>
+        </div>
+
+        <!-- Search button -->
+        <button type="submit" class="search-btn" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+
+      </div>
+
+    </form>
+
+    <!-- ── Category Filter Chips ──
+         Clicking a chip adds ?category=... to the URL and submits.
+         Active chip (matching current URL param) gets highlighted. -->
+    <div class="category-chips" id="categoryChips">
+
+      <%
+        // List of categories with their Font Awesome icons
+        // Add/remove categories here as needed
+        const categories = [
+          { value: "beach",     icon: "fa-umbrella-beach",  label: "Beach"     },
+          { value: "mountain",  icon: "fa-mountain",        label: "Mountains" },
+          { value: "city",      icon: "fa-city",            label: "City"      },
+          { value: "forest",    icon: "fa-tree",            label: "Forest"    },
+          { value: "desert",    icon: "fa-sun",             label: "Desert"    },
+          { value: "lake",      icon: "fa-water",           label: "Lakes"     },
+          { value: "heritage",  icon: "fa-landmark",        label: "Heritage"  },
+          { value: "camping",   icon: "fa-campground",      label: "Camping"   },
+        ];
+
+        // Get the current active category from the URL query string
+        const activeCategory = typeof category !== 'undefined' ? category : '';
+      %>
+
+      <% for (let cat of categories) { %>
+        <a
+          href="/listings?category=<%= cat.value %><%= typeof search !== 'undefined' && search ? '&search=' + search : '' %>"
+          class="category-chip <%= activeCategory === cat.value ? 'active' : '' %>"
+          aria-label="Filter by <%= cat.label %>"
+        >
+          <i class="fa-solid <%= cat.icon %>"></i>
+          <span><%= cat.label %></span>
+        </a>
+      <% } %>
+
+      <!-- Clear all filters -->
+      <% if (activeCategory || (typeof search !== 'undefined' && search)) { %>
+        <a href="/listings" class="category-chip chip-clear">
+          <i class="fa-solid fa-xmark"></i>
+          <span>Clear</span>
+        </a>
+      <% } %>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+  /**
+   * toggleDarkMode
+   * ──────────────
+   * Called when the user clicks the sun/moon button.
+   *
+   * Steps:
+   * 1. Read the current theme from <html data-theme="...">
+   * 2. Flip it to the opposite
+   * 3. Update the <html> attribute (CSS variables change instantly)
+   * 4. Save the new preference to localStorage (persists on refresh)
+   * 5. Update all toggle button icons (desktop + mobile)
+   */
+  function toggleDarkMode() {
+    // Step 1: What's the current theme?
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute('data-theme');
+
+    // Step 2: Flip it
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+    // Step 3: Apply immediately (CSS variables update)
+    html.setAttribute('data-theme', newTheme);
+
+    // Step 4: Persist in localStorage so it survives page reload
+    localStorage.setItem('wandernest-theme', newTheme);
+
+    // Step 5: Update all icons
+    updateDarkModeIcons(newTheme);
+  }
+
+  /**
+   * updateDarkModeIcons
+   * ───────────────────
+   * Sets the icon to ☀️ (sun) in dark mode and 🌙 (moon) in light mode.
+   * We have two buttons (desktop + mobile) so we update both.
+   *
+   * @param {string} theme - 'dark' or 'light'
+   */
+  function updateDarkModeIcons(theme) {
+    const isDark = theme === 'dark';
+
+    // Select all toggle icon elements (desktop + mobile)
+    const icons = document.querySelectorAll('[id^="darkIcon"]');
+
+    icons.forEach(icon => {
+      if (isDark) {
+        // In dark mode: show sun (to switch back to light)
+        icon.className = 'fa-solid fa-sun';
+      } else {
+        // In light mode: show moon (to switch to dark)
+        icon.className = 'fa-solid fa-moon';
+      }
+    });
+  }
+
+  /**
+   * Run on page load — sync the icon with the saved theme.
+   * (The theme itself was already applied by darkmode.ejs before body rendered)
+   */
+  document.addEventListener('DOMContentLoaded', function () {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    updateDarkModeIcons(currentTheme);
+  });
+</script>
+

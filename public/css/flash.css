@@ -1,0 +1,94 @@
+
+ /* ── Flash Container ──
+     Centered, fixed near the top so it always stays visible */
+  .flash-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 1rem 0;
+    animation: flashSlideDown 0.3s ease;  /* smooth entrance */
+  }
+
+  /* ── Base Flash Styles ── */
+  .flash {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1.25rem;
+    border-radius: 12px;
+    max-width: 520px;
+    width: 100%;
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  /* ── Success Variant (green) ── */
+  .flash-success {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+  }
+  .flash-success .flash-icon {
+    color: #16a34a;
+  }
+
+  /* ── Error Variant (red) ── */
+  .flash-error {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+  }
+  .flash-error .flash-icon {
+    color: #dc2626;
+  }
+
+  /* ── Icon ── */
+  .flash-icon {
+    font-size: 1rem;
+    flex-shrink: 0;   /* prevents icon from shrinking */
+  }
+
+  /* ── Message Text ── */
+  .flash-message {
+    flex: 1;          /* takes up all remaining space */
+  }
+
+  /* ── Close Button ── */
+  .flash-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.2rem;
+    color: inherit;
+    opacity: 0.6;
+    font-size: 0.95rem;
+    line-height: 1;
+    transition: opacity 0.15s ease;
+  }
+  .flash-close:hover {
+    opacity: 1;
+  }
+
+  /* ── Entrance Animation ── */
+  @keyframes flashSlideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ── Fade-out when dismissed ── */
+  .flash-wrapper.hiding {
+    animation: flashFadeOut 0.3s ease forwards;
+  }
+  @keyframes flashFadeOut {
+    to {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }

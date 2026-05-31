@@ -1,0 +1,206 @@
+
+<% layout("/layouts/boilerplate") %>
+
+<div class="auth-page">
+  <div class="auth-card">
+
+    <!-- ── Logo ── -->
+    <a href="/" class="auth-logo" aria-label="Listora — go to homepage">
+      <div class="auth-logo-icon" aria-hidden="true">
+        <i class="fa-regular fa-compass"></i>
+      </div>
+      <span class="auth-logo-name">Listora</span>
+    </a>
+
+    <h1 class="auth-heading">Create your account</h1>
+    <p class="auth-subtext">Join thousands of travellers on Listora.</p>
+
+    <form action="/signup" method="POST" id="signup-form" novalidate>
+
+      <!-- ── Username ── -->
+      <div class="auth-field">
+        <label for="username">Username</label>
+        <div class="auth-input-wrap">
+          <i class="ti ti-user icon" aria-hidden="true"></i>
+          <input
+            type="text"
+            name="username"
+            id="username"
+            class="auth-input"
+            placeholder="your_username"
+            autocomplete="username"
+            aria-describedby="username-err"
+            required
+            minlength="3"
+          >
+        </div>
+        <p class="auth-err" id="username-err" role="alert">
+          Username must be at least 3 characters.
+        </p>
+      </div>
+
+      <!-- ── Email ── -->
+      <div class="auth-field">
+        <label for="email">Email</label>
+        <div class="auth-input-wrap">
+          <i class="ti ti-mail icon" aria-hidden="true"></i>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            class="auth-input"
+            placeholder="you@example.com"
+            autocomplete="email"
+            aria-describedby="email-err"
+            required
+          >
+        </div>
+        <p class="auth-err" id="email-err" role="alert">
+          Please enter a valid email address.
+        </p>
+      </div>
+
+      <!-- ── Password ──────────────────────────────────────────────────
+           DOM ORDER NOTE: The elements after .auth-input in this field are:
+             .pw-strength (bars)  →  .pw-strength-lbl  →  .auth-err
+           The CSS general sibling selector (.auth-input.is-invalid ~ .auth-err)
+           correctly matches .auth-err because ~ targets ANY later sibling, not
+           just the immediately adjacent one. We also add .auth-field--has-error
+           on the .auth-field wrapper from JS as an extra trigger.
+           ── -->
+      <div class="auth-field" id="password-field">
+        <label for="password">Password</label>
+        <div class="auth-input-wrap has-toggle">
+          <i class="ti ti-lock icon" aria-hidden="true"></i>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            class="auth-input"
+            placeholder="Min. 6 characters"
+            autocomplete="new-password"
+            aria-describedby="pw-lbl password-err"
+            required
+            minlength="6"
+          >
+          <button
+            type="button"
+            class="pw-toggle"
+            id="pw-tog"
+            aria-label="Show password"
+            aria-pressed="false"
+          >
+            <i class="ti ti-eye" id="pw-icon" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <%# FIX: strength bars are always in the DOM; CSS hides them at zero height
+            until the user starts typing — this prevents layout shift %>
+        <div class="pw-strength" id="pw-strength" aria-hidden="true">
+          <div class="pw-bar" id="bar1"></div>
+          <div class="pw-bar" id="bar2"></div>
+          <div class="pw-bar" id="bar3"></div>
+        </div>
+        <%# FIX: min-height set in CSS so this never causes layout shift %>
+        <p class="pw-strength-lbl" id="pw-lbl" aria-live="polite"></p>
+
+        <%# FIX: .auth-err is still a general sibling of .auth-input so
+            CSS ~ selector reaches it; JS also sets .auth-field--has-error
+            on #password-field as a belt-and-braces trigger %>
+        <p class="auth-err" id="password-err" role="alert">
+          Password must be at least 6 characters.
+        </p>
+      </div>
+
+      <%# FIX: inline style removed from icon; .auth-submit i rule in CSS handles it %>
+      <button type="submit" class="auth-submit">
+        <i class="ti ti-user-plus" aria-hidden="true"></i>
+        Create account
+      </button>
+
+      <p class="auth-terms">
+        By signing up you agree to our
+        <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>.
+      </p>
+
+    </form>
+
+    <div class="auth-divider" aria-hidden="true">
+      <hr><span>Already have an account?</span><hr>
+    </div>
+
+    <p class="auth-footer">
+      <a href="/login">Log in instead</a>
+    </p>
+
+  </div><!-- /.auth-card -->
+</div><!-- /.auth-page -->
+
+<script>
+  // ── Password show / hide toggle ──────────────────────────────────
+  (function () {
+    const btn  = document.getElementById('pw-tog');
+    const inp  = document.getElementById('password');
+    const icon = document.getElementById('pw-icon');
+    if (!btn || !inp || !icon) return;
+
+    btn.addEventListener('click', function () {
+      const showing = inp.type === 'password';
+      inp.type         = showing ? 'text'         : 'password';
+      icon.className   = showing ? 'ti ti-eye-off' : 'ti ti-eye';
+      this.setAttribute('aria-label',  showing ? 'Hide password' : 'Show password');
+      this.setAttribute('aria-pressed', showing ? 'true' : 'false');
+    });
+  }());
+
+  // ── Password strength meter ──────────────────────────────────────
+  // FIX: strength label colour now set via CSS classes (lbl-weak / lbl-medium /
+  //      lbl-strong) instead of inline style, enabling CSS transitions.
+  (function () {
+    const input = document.getElementById('password');
+    const bars  = [
+      document.getElementById('bar1'),
+      document.getElementById('bar2'),
+      document.getElementById('bar3')
+    ];
+    const lbl = document.getElementById('pw-lbl');
+    if (!input || bars.some(function (b) { return !b; }) || !lbl) return;
+
+    const LEVELS = [
+      { bar: 'weak',   label: 'Weak',   cls: 'lbl-weak'   },
+      { bar: 'medium', label: 'Medium', cls: 'lbl-medium' },
+      { bar: 'strong', label: 'Strong', cls: 'lbl-strong' }
+    ];
+
+    input.addEventListener('input', function () {
+      const v = this.value;
+
+      // Reset bars and label classes
+      bars.forEach(function (b) { b.className = 'pw-bar'; });
+      lbl.className = 'pw-strength-lbl';
+      lbl.textContent = '';
+
+      if (!v) return;
+
+      // Score: 1 = weak, 2 = medium, 3 = strong
+      let score = 0;
+      if (v.length >= 6)                              score++;
+      if (v.length >= 10 && /[A-Z]/.test(v))          score++;
+      if (/[0-9]/.test(v) && /[^A-Za-z0-9]/.test(v)) score++;
+
+      if (score === 0) score = 1; // always at least weak once typing starts
+
+      const level = LEVELS[score - 1];
+
+      // Colour bars up to current score
+      for (let i = 0; i < score; i++) {
+        bars[i].classList.add(level.bar);
+      }
+
+      // FIX: set CSS class instead of inline style
+      lbl.textContent = level.label;
+      lbl.classList.add(level.cls);
+    });
+  }());
+
+</script>

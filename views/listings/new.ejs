@@ -1,0 +1,120 @@
+<% layout("/layouts/boilerplate") %>
+
+
+<div class="form-page">
+  <div class="form-shell">
+
+    <!-- Header -->
+    <div class="form-page-header">
+      <p class="form-page-eyebrow">Listings</p>
+      <h1 class="form-page-title">Add a new listing</h1>
+      <p class="form-page-sub">Share your space with travellers around the world.</p>
+    </div>
+
+    <!-- Progress -->
+    <div class="form-steps" aria-label="Form progress">
+      <div class="form-step">
+        <div class="form-step-dot active">1</div>
+        <span class="form-step-label active">Details</span>
+      </div>
+      <div class="form-step-line"></div>
+      <div class="form-step">
+        <div class="form-step-dot idle">2</div>
+        <span class="form-step-label">Photos</span>
+      </div>
+      <div class="form-step-line"></div>
+      <div class="form-step">
+        <div class="form-step-dot idle">3</div>
+        <span class="form-step-label">Pricing</span>
+      </div>
+    </div>
+
+    <form method="POST" action="/listings" enctype="multipart/form-data" id="new-form" novalidate>
+
+      <!-- Card 1: Basic Info -->
+      <div class="form-card">
+        <p class="form-section-title">
+          <i class="ti ti-info-circle" aria-hidden="true"></i>
+          Basic information
+        </p>
+
+        <div class="form-field">
+          <label for="title">Title <span class="req">*</span></label>
+          <input name="listing[title]" id="title" type="text"
+            class="sp-input" placeholder="e.g. Cozy mountain cabin with lake view" required>
+          <p class="field-err">Please enter a title.</p>
+        </div>
+
+        <div class="form-field">
+          <label for="description">Description <span class="req">*</span></label>
+          <textarea name="listing[description]" id="description"
+            class="sp-textarea" rows="4"
+            placeholder="Describe what makes your place unique..." required></textarea>
+          <p class="field-err">Please enter a description.</p>
+        </div>
+      </div>
+
+      <!-- Card 2: Photo -->
+      <div class="form-card">
+        <p class="form-section-title">
+          <i class="ti ti-photo" aria-hidden="true"></i>
+          Listing photo
+        </p>
+
+        <div class="form-field">
+          <label for="image">Upload image <span class="req">*</span></label>
+          <input name="listing[image]" id="image" type="file"
+            class="sp-file" accept="image/*" required>
+          <p class="field-hint">JPG, PNG, WEBP — max 10MB</p>
+          <div class="img-preview-wrap" id="img-preview-wrap">
+            <img id="img-preview" src="" alt="Preview">
+            <span class="img-preview-lbl">Preview</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Location + Price -->
+      <div class="form-card">
+        <p class="form-section-title">
+          <i class="ti ti-map-pin" aria-hidden="true"></i>
+          Location & pricing
+        </p>
+
+        <div class="form-row" style="margin-bottom:20px;">
+          <div class="form-field" style="margin-bottom:0;">
+            <label for="price">Price / night <span class="req">*</span></label>
+            <div class="input-prefix-wrap">
+              <span class="input-prefix">₹</span>
+              <input name="listing[price]" id="price" type="number"
+                class="sp-input" placeholder="1000" min="1" required>
+            </div>
+            <p class="field-err">Enter a valid price.</p>
+          </div>
+          <div class="form-field" style="margin-bottom:0;">
+            <label for="country">Country <span class="req">*</span></label>
+            <input name="listing[country]" id="country" type="text"
+              class="sp-input" placeholder="e.g. India" required>
+            <p class="field-err">Enter a valid country.</p>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="location">City / Location <span class="req">*</span></label>
+          <input name="listing[location]" id="location" type="text"
+            class="sp-input" placeholder="e.g. Manali, Himachal Pradesh" required>
+          <p class="field-err">Enter a valid location.</p>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-submit-row">
+        <button type="submit" class="btn-submit">
+          <i class="ti ti-plus" style="font-size:15px;" aria-hidden="true"></i>
+          Create listing
+        </button>
+        <a href="/listings" class="btn-cancel">Cancel</a>
+      </div>
+
+    </form>
+  </div>
+</div>

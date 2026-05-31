@@ -1,0 +1,255 @@
+<% layout("/layouts/boilerplate") %>
+
+
+<section id="listingsPage">
+  <div class="container">
+
+    <!-- ── Active Search / Filter Feedback Bar ──
+         Shows the user what they're currently filtering by,
+         so they never feel "lost" in filtered results -->
+    <% const hasFilters = (typeof search !== 'undefined' && search) || (typeof category !== 'undefined' && category); %>
+
+    <% if (hasFilters) { %>
+      <div class="filter-feedback-bar">
+        <span class="filter-feedback-text">
+          <i class="fa-solid fa-filter me-1"></i>
+          Showing <strong><%= allListings.length %></strong> result<%= allListings.length !== 1 ? 's' : '' %>
+          <% if (typeof search !== 'undefined' && search) { %>
+            for <em>"<%= search %>"</em>
+          <% } %>
+          <% if (typeof category !== 'undefined' && category) { %>
+            in <strong class="filter-category-badge"><%= category %></strong>
+          <% } %>
+        </span>
+        <a href="/listings" class="filter-clear-link">
+          <i class="fa-solid fa-xmark me-1"></i>Clear filters
+        </a>
+      </div>
+    <% } %>
+
+    <!-- ── Page Header ── -->
+    <div class="listings-header">
+      <div>
+        <h1 class="listings-title">
+          <% if (typeof category !== 'undefined' && category) { %>
+            <%= category.charAt(0).toUpperCase() + category.slice(1) %> Stays
+          <% } else if (typeof search !== 'undefined' && search) { %>
+            Results for "<%= search %>"
+          <% } else { %>
+            Explore Places to Stay
+          <% } %>
+        </h1>
+        <p class="listings-subtitle">
+          <%= allListings.length %> propert<%= allListings.length !== 1 ? 'ies' : 'y' %> available
+        </p>
+      </div>
+
+      <a href="/listings/new" class="btn btn-add-listing">
+        <i class="fa-solid fa-plus me-2"></i>Add Listing
+      </a>
+    </div>
+
+    <!-- ── Listings Grid ── -->
+    <% if (allListings.length > 0) { %>
+
+      <div class="listings-grid">
+        <% for (let listing of allListings) { %>
+
+          <div class="listing-card-wrapper">
+
+            <!-- ❤️ Wishlist Heart Button
+                 Positioned absolute over the card image.
+                 The JS toggleLike() function handles the animation.
+                 For real persistence, wire to POST /wishlist/:id -->
+            <button
+              class="like-btn"
+              onclick="toggleLike(this, '<%= listing._id %>')"
+              aria-label="Save to wishlist"
+              title="Save to wishlist"
+            >
+              <i class="fa-regular fa-heart"></i>
+            </button>
+
+            <!-- The card itself — links to listing detail page -->
+            <a
+              href="/listings/<%= listing._id %>"
+              class="listing-card"
+              aria-label="View <%= listing.title %>"
+            >
+
+              <!-- Card Image -->
+              <div class="listing-card-image-wrapper">
+                <img
+                  src="<%= listing.image.url %>"
+                  alt="<%= listing.title %>"
+                  class="listing-card-image"
+                  loading="lazy"
+                />
+                <!-- Price badge overlaid on image -->
+                <div class="listing-price-badge">
+                  &#8377;<%= listing.price.toLocaleString("en-IN") %><span>/night</span>
+                </div>
+                <!-- Category tag (if listing has a category field) -->
+                <% if (listing.category) { %>
+                  <div class="listing-category-tag">
+                    <%= listing.category %>
+                  </div>
+                <% } %>
+              </div>
+
+              <!-- Card Body -->
+              <div class="listing-card-body">
+                <h2 class="listing-card-title"><%= listing.title %></h2>
+                <p class="listing-card-location">
+                  <i class="fa-solid fa-location-dot me-1"></i>
+                  <%= listing.location %>, <%= listing.country %>
+                </p>
+                <!-- Rating stars (static 4.8 placeholder — replace with real data) -->
+                <div class="listing-card-rating">
+                  <i class="fa-solid fa-star"></i>
+                  <span>4.8</span>
+                  <span class="rating-count">(<%= listing.reviews.length %>)</span>
+                </div>
+              </div>
+
+            </a>
+          </div>
+
+        <% } %>
+      </div>
+
+    <% } else { %>
+
+      <!-- ── Empty State ── -->
+      <div class="listings-empty">
+        <div class="listings-empty-icon-wrapper">
+          <i class="fa-regular fa-compass"></i>
+        </div>
+        <h3>No properties found</h3>
+        <p>
+          <% if (hasFilters) { %>
+            Try different search terms or
+            <a href="/listings" class="text-brand">browse all listings</a>.
+          <% } else { %>
+            Be the first to add a property!
+          <% } %>
+        </p>
+        <% if (!hasFilters) { %>
+          <a href="/listings/new" class="btn btn-add-listing mt-3">
+            <i class="fa-solid fa-plus me-2"></i>Add First Listing
+          </a>
+        <% } %>
+      </div>
+
+    <% } %>
+
+  </div>
+</section>
+
+
+<script>
+  /**
+   * toggleLike — handles the heart/wishlist button on listing cards
+   * ────────────────────────────────────────────────────────────────
+   * @param {HTMLElement} btn      - the button element that was clicked
+   * @param {string}      listingId - the MongoDB _id of the listing
+   *
+   * What it does:
+   * 1. Toggles the 'liked' CSS class (changes icon appearance)
+   * 2. Plays a small scale-up animation
+   * 3. Sends a POST to /wishlist/toggle/:id (you need this route)
+   * 4. Shows a small toast notification
+   *
+   * TO WIRE UP THE BACKEND:
+   *   router.post("/wishlist/toggle/:id", isLoggedIn, async (req, res) => {
+   *     const user = await User.findById(req.user._id);
+   *     const idx = user.wishlist.indexOf(req.params.id);
+   *     if (idx === -1) {
+   *       user.wishlist.push(req.params.id);  // add
+   *     } else {
+   *       user.wishlist.splice(idx, 1);        // remove
+   *     }
+   *     await user.save();
+   *     res.json({ liked: idx === -1 });
+   *   });
+   */
+  function toggleLike(btn, listingId) {
+    // Toggle the 'liked' class to visually fill the heart
+    const isNowLiked = btn.classList.toggle('liked');
+
+    // Swap icon between outlined and solid heart
+    const icon = btn.querySelector('i');
+    if (isNowLiked) {
+      icon.className = 'fa-solid fa-heart';   // filled heart
+    } else {
+      icon.className = 'fa-regular fa-heart'; // outlined heart
+    }
+
+    // Quick bounce animation
+    btn.style.transform = 'scale(1.3)';
+    setTimeout(() => { btn.style.transform = ''; }, 200);
+
+    // Optional: send to server (won't break if route doesn't exist yet)
+    fetch(`/wishlist/toggle/${listingId}`, { method: 'POST' })
+      .catch(() => {}); // silently ignore if route not set up yet
+
+    // Show mini toast feedback
+    showLikeToast(isNowLiked);
+  }
+
+  /**
+   * showLikeToast — tiny feedback toast for like/unlike actions
+   * Creates a temporary element, shows it for 2s, then removes it.
+   */
+  function showLikeToast(liked) {
+    // Remove any existing toast first
+    const existing = document.getElementById('likeToast');
+    if (existing) existing.remove();
+
+    // Create the toast element
+    const toast = document.createElement('div');
+    toast.id = 'likeToast';
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-surface);
+      color: var(--text-body);
+      border: 1px solid var(--border-color);
+      border-radius: 50px;
+      padding: 0.6rem 1.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      animation: toastIn 0.25s ease;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    `;
+    toast.innerHTML = liked
+      ? '<i class="fa-solid fa-heart" style="color:#e85d3a"></i> Saved to wishlist'
+      : '<i class="fa-regular fa-heart" style="color:#6b7280"></i> Removed from wishlist';
+
+    document.body.appendChild(toast);
+
+    // Auto remove after 2 seconds
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.3s';
+      setTimeout(() => toast.remove(), 300);
+    }, 2000);
+  }
+
+  // CSS for the toast animation (injected once)
+  const toastStyle = document.createElement('style');
+  toastStyle.textContent = `
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+  `;
+  document.head.appendChild(toastStyle);
+</script>

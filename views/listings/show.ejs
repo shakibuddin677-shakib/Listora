@@ -1,0 +1,401 @@
+<% layout("/layouts/boilerplate") %>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<div class="container mt-4 mb-5 pb-5 sp">
+
+  <%- /* ═══ TITLE ═══════════════════════════════════════════════ */ %>
+  <div class="row mb-3 fade-up fade-up-1">
+    <div class="col-md-6 offset-md-3">
+      <p class="section-eyebrow">Listing</p>
+      <h1 style="font-family:'Fraunces',serif; font-size:28px; font-weight:300; margin:0 0 6px;">
+        <%= listing.title %>
+      </h1>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <span style="font-size:13px; color:var(--ink-3);">
+          Hosted by <strong style="color:var(--ink-2); font-weight:600;"><%= listing.owner.username %></strong>
+        </span>
+        <span class="badge-pill badge-verified">
+          <i class="ti ti-shield-check" style="font-size:12px;" aria-hidden="true"></i>
+          Verified stay
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <%- /* ═══ LISTING CARD ════════════════════════════════════════ */ %>
+  <div class="row mb-3 fade-up fade-up-2">
+    <div class="col-md-6 offset-md-3">
+      <div class="listing-card">
+
+        <div style="overflow:hidden;">
+          <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
+        </div>
+
+        <div style="padding:1.5rem;">
+
+          <p style="font-size:14px; color:var(--ink-2); line-height:1.7; margin-bottom:1.25rem;">
+            <%= listing.description %>
+          </p>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:1.25rem;">
+            <div style="background:var(--surface); border-radius:var(--radius-sm); padding:14px 16px;">
+              <p style="font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); margin:0 0 4px;">Price per night</p>
+              <p style="font-family:'Fraunces',serif; font-size:22px; font-weight:300; color:var(--green); margin:0;">
+                ₹ <%= listing.price.toLocaleString("en-IN") %>
+              </p>
+            </div>
+            <div style="background:var(--surface); border-radius:var(--radius-sm); padding:14px 16px;">
+              <p style="font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); margin:0 0 4px;">Location</p>
+              <p style="font-size:14px; font-weight:500; color:var(--ink); margin:0; line-height:1.4;">
+                <i class="ti ti-map-pin" style="font-size:13px; vertical-align:-1px; margin-right:3px; color:var(--ink-3);" aria-hidden="true"></i>
+                <%= listing.location %>, <%= listing.country %>
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- /* ═══ OWNER BUTTONS ═════════════════════════════════════ */ %>
+  <% if(currUser && listing.owner._id.equals(currUser._id)) { %>
+  <div class="row mb-4 fade-up fade-up-3">
+    <div class="col-md-6 offset-md-3 d-flex justify-content-between align-items-center">
+      <a href="/listings/<%= listing._id %>/edit" class="btn-edit">
+        <i class="ti ti-pencil" style="font-size:14px;" aria-hidden="true"></i>
+        Edit listing
+      </a>
+      <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" style="margin:0;">
+        <button class="btn-del-owner" type="submit">
+          <i class="ti ti-trash" style="font-size:14px;" aria-hidden="true"></i>
+          Delete listing
+        </button>
+      </form>
+    </div>
+  </div>
+  <% } %>
+
+  <%- /* ═══ REVIEW SECTION ════════════════════════════════════ */ %>
+  <div class="row fade-up fade-up-4">
+    <div class="col-md-6 offset-md-3">
+      <div class="review-surface">
+
+        <%- /* ── Leave a Review Form ── */ %>
+        <% if(currUser) { %>
+        <div class="form-card mb-4 reveal">
+
+          <div style="margin-bottom:1.25rem;">
+            <p class="section-eyebrow">Your opinion matters</p>
+            <p class="section-title">Leave a review</p>
+          </div>
+
+          <form method="POST" action="/listings/<%= listing._id %>/reviews" id="review-form">
+
+            <%- /* Star Picker */ %>
+            <div style="margin-bottom:1.5rem;">
+              <p class="field-label">Rating</p>
+              <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <div style="display:flex; gap:4px;" id="star-picker" role="radiogroup" aria-label="Star rating">
+                  <% for(let i = 1; i <= 5; i++) { %>
+                    <span class="star-icon" data-val="<%= i %>" role="radio" aria-checked="false" aria-label="<%= i %> star<%= i>1?'s':'' %>" tabindex="0">★</span>
+                  <% } %>
+                </div>
+                <span class="rating-chip hidden" id="rating-chip">—</span>
+                <input type="hidden" name="review[rating]" id="rating-val" value="0">
+              </div>
+            </div>
+
+            <%- /* Comment */ %>
+            <div style="margin-bottom:1.5rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <p class="field-label" style="margin:0;">Comment</p>
+              </div>
+              <textarea
+                class="sp-textarea"
+                name="review[comment]"
+                id="rv-comment"
+                rows="4"
+                maxlength="500"
+                placeholder="Describe your experience — what made it special?"
+                required
+              ></textarea>
+              <p class="char-counter" id="char-cnt">0 / 500</p>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+              <button type="submit" class="btn-submit" id="submit-btn">
+                <i class="ti ti-send" style="font-size:14px;" aria-hidden="true"></i>
+                Post review
+              </button>
+              <p style="font-size:12px; color:var(--ink-4); margin:0;" id="form-hint">Select a rating to continue</p>
+            </div>
+
+          </form>
+        </div>
+        <% } %>
+
+        <%- /* ── Rating Summary + Sort ── */ %>
+        <% if(listing.reviews.length > 0) { %>
+        <div class="reveal" style="margin-bottom:1.25rem;">
+
+          <div style="display:flex; gap:1.5rem; align-items:flex-start; flex-wrap:wrap; margin-bottom:1.25rem;">
+
+            <%- /* Big avg score */ %>
+            <div style="text-align:center; min-width:68px;">
+              <p class="avg-score" id="avg-display">—</p>
+              <div class="inline-stars" id="avg-stars" style="font-size:16px; letter-spacing:2px;">☆☆☆☆☆</div>
+              <p style="font-size:11px; color:var(--ink-3); margin:4px 0 0;">out of 5</p>
+            </div>
+
+            <%- /* Bar breakdown */ %>
+            <div style="flex:1; min-width:160px;" id="breakdown-bars">
+              <% for(let b = 5; b >= 1; b--) { %>
+              <div class="breakdown-row" data-bar="<%= b %>">
+                <span style="font-size:12px; color:var(--ink-3); min-width:10px; text-align:right;"><%= b %></span>
+                <i class="ti ti-star" style="font-size:12px; color:var(--amber);" aria-hidden="true"></i>
+                <div class="breakdown-bar-bg">
+                  <div class="breakdown-bar-fill" data-pct="0"></div>
+                </div>
+                <span style="font-size:12px; color:var(--ink-3); min-width:28px;" class="bar-pct">0%</span>
+              </div>
+              <% } %>
+            </div>
+
+          </div>
+
+          <%- /* Sort controls */ %>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span style="font-size:12px; color:var(--ink-3); font-weight:500;">Sort:</span>
+            <button class="sort-btn active" data-sort="newest">Newest</button>
+            <button class="sort-btn" data-sort="highest">Highest rated</button>
+            <button class="sort-btn" data-sort="lowest">Lowest rated</button>
+          </div>
+
+        </div>
+
+        <hr class="sp-divider">
+        <% } %>
+
+        <%- /* ── All Reviews Header ── */ %>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
+          <div>
+            <p class="section-eyebrow">Community feedback</p>
+            <p class="section-title" style="font-size:18px;">All reviews</p>
+          </div>
+          <span class="badge-pill badge-count"><%= listing.reviews.length %></span>
+        </div>
+
+        <%- /* ── Empty State ── */ %>
+        <% if(listing.reviews.length === 0) { %>
+        <div class="empty-state reveal">
+          <i class="ti ti-message-circle" style="font-size:36px; color:var(--ink-4); display:block; margin-bottom:12px;" aria-hidden="true"></i>
+          <p style="font-size:15px; font-weight:500; color:var(--ink-2); margin:0 0 4px;">No reviews yet</p>
+          <p style="font-size:13px; color:var(--ink-3); margin:0;">Be the first to share your experience</p>
+        </div>
+
+        <% } else { %>
+
+        <%- /* ── Review Cards ── */ %>
+        <div id="reviews-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:10px;">
+
+          <% for(let i = 0; i < listing.reviews.length; i++) {
+               const review = listing.reviews[i];
+               const avClasses = ['av-a','av-b','av-c','av-d','av-e'];
+               const avCls = avClasses[i % avClasses.length];
+               const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+          %>
+          <div
+            class="review-card reveal"
+            data-rating="<%= review.rating %>"
+            data-idx="<%= i %>"
+          >
+
+            <%- /* Author row */ %>
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px; gap:8px;">
+              <div style="display:flex; align-items:center; gap:10px; min-width:0;">
+                <div class="avatar <%= avCls %>">
+                  <%= review.author.username.slice(0,2).toUpperCase() %>
+                </div>
+                <div style="min-width:0;">
+                  <p style="font-size:13px; font-weight:600; color:var(--ink); margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                    @<%= review.author.username %>
+                  </p>
+                  <div class="inline-stars" style="font-size:12px;"><%= stars %></div>
+                </div>
+              </div>
+              <span class="rv-pill"><%= review.rating %> ★</span>
+            </div>
+
+            <%- /* Comment */ %>
+            <p style="font-size:13px; color:var(--ink-2); margin:0 0 14px; line-height:1.7;">
+              <%= review.comment %>
+            </p>
+
+            <%- /* Footer row */ %>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+              <button
+                class="btn-helpful"
+                data-votes="0"
+                onclick="toggleHelpful(this)"
+                type="button"
+              >
+                <i class="ti ti-thumb-up" style="font-size:13px;" aria-hidden="true"></i>
+                <span class="helpful-label">Helpful</span>
+                <span class="helpful-count" style="font-size:11px; opacity:.7;">0</span>
+              </button>
+
+              <form
+                method="POST"
+                action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
+                style="margin:0;"
+              >
+                <button type="submit" class="btn-rv-del">
+                  <i class="ti ti-trash" style="font-size:12px; vertical-align:-1px; margin-right:3px;" aria-hidden="true"></i>Delete
+                </button>
+              </form>
+            </div>
+
+          </div>
+          <% } %>
+
+        </div>
+        <% } %>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+
+  /* ── Star Picker ─────────────────────────────── */
+  const stars   = document.querySelectorAll('#star-picker .star-icon');
+  const chip    = document.getElementById('rating-chip');
+  const inp     = document.getElementById('rating-val');
+  const hint    = document.getElementById('form-hint');
+  const submitB = document.getElementById('submit-btn');
+
+  const chipCfg = [
+    null,
+    { cls: 'v1', label: 'Terrible'  },
+    { cls: 'v2', label: 'Poor'      },
+    { cls: 'v3', label: 'Okay'      },
+    { cls: 'v4', label: 'Good'      },
+    { cls: 'v5', label: 'Excellent' }
+  ];
+  let cur = 0;
+
+  function paintStars(n) {
+    stars.forEach(s => {
+      const v = +s.dataset.val;
+      s.style.color     = v <= n ? '#EF9F27' : '#c8c4be';
+      s.style.transform = v <= n ? 'scale(1.12)' : 'scale(1)';
+    });
+  }
+
+  function setRating(n) {
+    cur = n;
+    inp.value = n;
+    paintStars(n);
+    chip.className = 'rating-chip v' + n;
+    chip.textContent = chipCfg[n].label;
+    stars.forEach(s => s.setAttribute('aria-checked', +s.dataset.val === n ? 'true' : 'false'));
+    if (hint) { hint.textContent = ''; }
+  }
+
+  stars.forEach(s => {
+    s.addEventListener('mouseenter', () => paintStars(+s.dataset.val));
+    s.addEventListener('mouseleave', () => paintStars(cur));
+    s.addEventListener('click', () => {
+      const v = +s.dataset.val;
+      setRating(v);
+      s.classList.add('popped');
+      s.addEventListener('animationend', () => s.classList.remove('popped'), { once: true });
+    });
+    s.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); s.click(); }
+    });
+  });
+
+  /* ── Char Counter ────────────────────────────── */
+  const ta  = document.getElementById('rv-comment');
+  const cnt = document.getElementById('char-cnt');
+  if (ta && cnt) {
+    ta.addEventListener('input', () => {
+      const len = ta.value.length;
+      cnt.textContent = len + ' / 500';
+      cnt.className   = 'char-counter' + (len > 450 ? (len > 490 ? ' over' : ' warn') : '');
+    });
+  }
+
+  /* ── Helpful Toggle ──────────────────────────── */
+  window.toggleHelpful = function(btn) {
+    const voted = btn.classList.toggle('voted');
+    const countEl = btn.querySelector('.helpful-count');
+    let v = parseInt(countEl.textContent) || 0;
+    countEl.textContent = voted ? v + 1 : Math.max(0, v - 1);
+    btn.querySelector('.helpful-label').textContent = voted ? 'Helpful!' : 'Helpful';
+  };
+
+  /* ── Rating Breakdown ────────────────────────── */
+  const cards = document.querySelectorAll('#reviews-grid .review-card');
+  if (cards.length > 0) {
+    const counts = { 1:0, 2:0, 3:0, 4:0, 5:0 };
+    let total = 0, sum = 0;
+    cards.forEach(c => {
+      const r = +c.dataset.rating;
+      if (r >= 1 && r <= 5) { counts[r]++; total++; sum += r; }
+    });
+
+    const avg = total ? (sum / total).toFixed(1) : '—';
+    const avgEl = document.getElementById('avg-display');
+    if (avgEl) avgEl.textContent = avg;
+
+    const avgStarsEl = document.getElementById('avg-stars');
+    if (avgStarsEl && total) {
+      const f = Math.round(sum / total);
+      avgStarsEl.textContent = '★'.repeat(f) + '☆'.repeat(5 - f);
+    }
+
+    document.querySelectorAll('[data-bar]').forEach(row => {
+      const b    = +row.dataset.bar;
+      const pct  = total ? Math.round((counts[b] / total) * 100) : 0;
+      const fill = row.querySelector('.breakdown-bar-fill');
+      const lbl  = row.querySelector('.bar-pct');
+      if (fill) setTimeout(() => { fill.style.width = pct + '%'; }, 400);
+      if (lbl)  lbl.textContent = pct + '%';
+    });
+  }
+
+  /* ── Sort Controls ───────────────────────────── */
+  document.querySelectorAll('.sort-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const grid = document.getElementById('reviews-grid');
+      if (!grid) return;
+      const items = Array.from(grid.querySelectorAll('.review-card'));
+      const sort = btn.dataset.sort;
+      items.sort((a, b) => {
+        if (sort === 'highest') return +b.dataset.rating - +a.dataset.rating;
+        if (sort === 'lowest')  return +a.dataset.rating - +b.dataset.rating;
+        return +a.dataset.idx - +b.dataset.idx;
+      });
+      items.forEach(el => grid.appendChild(el));
+    });
+  });
+
+  /* ── Scroll Reveal ───────────────────────────── */
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => io.observe(el));
+
+})();
+</script>

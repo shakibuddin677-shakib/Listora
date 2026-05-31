@@ -1,0 +1,53 @@
+ 
+
+<% if (success && success.length) { %>
+
+  <div class="flash-wrapper" id="flashSuccess">
+    <div class="flash flash-success" role="alert" aria-live="polite">
+
+      <!-- ✅ Success icon -->
+      <i class="fa-solid fa-circle-check flash-icon"></i>
+
+      <!-- Message text -->
+      <span class="flash-message"><%= success %></span>
+
+      <!-- Manual close button -->
+      <button
+        class="flash-close"
+        onclick="closeFlash('flashSuccess')"
+        aria-label="Close notification"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+    </div>
+  </div>
+
+<% } %>
+
+
+<% if (error && error.length) { %>
+
+  <div class="flash-wrapper" id="flashError">
+    <div class="flash flash-error" role="alert" aria-live="assertive">
+
+      <!-- ❌ Error icon -->
+      <i class="fa-solid fa-circle-exclamation flash-icon"></i>
+
+      <!-- Message text -->
+      <span class="flash-message"><%= error %></span>
+
+      <!-- Manual close button -->
+      <button
+        class="flash-close"
+        onclick="closeFlash('flashError')"
+        aria-label="Close notification"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+    </div>
+  </div>
+
+<% } %>
+

@@ -1,0 +1,115 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="auth-page">
+  <div class="auth-card">
+
+    <!-- ── Logo ── -->
+    <a href="/" class="auth-logo" aria-label="Listora — go to homepage">
+      <div class="auth-logo-icon" aria-hidden="true">
+        <i class="fa-regular fa-compass"></i>
+      </div>
+      <span class="auth-logo-name">Listora</span>
+    </a>
+
+    <h1 class="auth-heading">Welcome back</h1>
+    <p class="auth-subtext">Log in to continue your journey.</p>
+
+    <form action="/login" method="POST" id="login-form" novalidate>
+
+      <!-- ── Username ── -->
+      <div class="auth-field">
+        <label for="username">Username</label>
+        <div class="auth-input-wrap">
+          <%# FIX: aria-hidden on decorative icons so screen readers skip them %>
+          <i class="ti ti-user icon" aria-hidden="true"></i>
+          <input
+            type="text"
+            name="username"
+            id="username"
+            class="auth-input"
+            placeholder="your_username"
+            autocomplete="username"
+            <%# FIX: aria-describedby links input to its error message %>
+            aria-describedby="username-err"
+            required
+          >
+        </div>
+        <%# FIX: id on error paragraph matches aria-describedby above;
+            role="alert" announces the error to screen readers when shown %>
+        <p class="auth-err" id="username-err" role="alert">
+          Please enter your username.
+        </p>
+      </div>
+
+      <!-- ── Password ── -->
+      <div class="auth-field">
+        <label for="password">Password</label>
+        <%# FIX: has-toggle class shifts input padding so text clears the toggle button %>
+        <div class="auth-input-wrap has-toggle">
+          <i class="ti ti-lock icon" aria-hidden="true"></i>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            class="auth-input"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            aria-describedby="password-err"
+            required
+          >
+          <%# FIX: aria-pressed communicates show/hide state; toggled by JS %>
+          <button
+            type="button"
+            class="pw-toggle"
+            id="pw-tog"
+            aria-label="Show password"
+            aria-pressed="false"
+          >
+            <i class="ti ti-eye" id="pw-icon" aria-hidden="true"></i>
+          </button>
+        </div>
+        <p class="auth-err" id="password-err" role="alert">
+          Please enter your password.
+        </p>
+      </div>
+
+      <%# FIX: icon inline style removed — .auth-submit i rule in CSS handles sizing %>
+      <button type="submit" class="auth-submit">
+        <i class="ti ti-login" aria-hidden="true"></i>
+        Log in
+      </button>
+
+    </form>
+
+    <div class="auth-divider" aria-hidden="true">
+      <hr><span>New to StayScape?</span><hr>
+    </div>
+
+    <p class="auth-footer">
+      Don't have an account?
+      <a href="/signup">Create one</a>
+    </p>
+
+  </div><!-- /.auth-card -->
+</div><!-- /.auth-page -->
+
+<script>
+  // ── Password show / hide toggle ──────────────────────────────────
+  (function () {
+    const btn  = document.getElementById('pw-tog');
+    const inp  = document.getElementById('password');
+    const icon = document.getElementById('pw-icon');
+
+    if (!btn || !inp || !icon) return;
+
+    btn.addEventListener('click', function () {
+      const showing = inp.type === 'password';
+      inp.type             = showing ? 'text'       : 'password';
+      icon.className       = showing ? 'ti ti-eye-off' : 'ti ti-eye';
+      this.setAttribute('aria-label',  showing ? 'Hide password' : 'Show password');
+      // FIX: update aria-pressed to communicate toggle state to screen readers
+      this.setAttribute('aria-pressed', showing ? 'true' : 'false');
+    });
+  }());
+
+</script>

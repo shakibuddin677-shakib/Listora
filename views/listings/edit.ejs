@@ -1,0 +1,119 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="form-page">
+  <div class="form-shell">
+
+    <!-- Header -->
+    <div class="form-page-header">
+      <p class="form-page-eyebrow">Listings</p>
+      <h1 class="form-page-title">Edit listing</h1>
+      <p class="form-page-sub">Update your listing details below.</p>
+    </div>
+
+    <div class="change-badge">
+      <i class="ti ti-pencil" style="font-size:12px;" aria-hidden="true"></i>
+      You are editing: <%= listing.title %>
+    </div>
+
+    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT"
+      enctype="multipart/form-data" id="edit-form" novalidate>
+
+      <!-- Card 1: Basic Info -->
+      <div class="form-card">
+        <p class="form-section-title">
+          <i class="ti ti-info-circle" aria-hidden="true"></i>
+          Basic information
+        </p>
+
+        <div class="form-field">
+          <label for="title">Title <span class="req">*</span></label>
+          <input name="listing[title]" id="title" type="text"
+            class="sp-input" value="<%= listing.title %>" required>
+          <p class="field-err">Please enter a title.</p>
+        </div>
+
+        <div class="form-field">
+          <label for="description">Description <span class="req">*</span></label>
+          <textarea name="listing[description]" id="description"
+            class="sp-textarea" rows="4" required><%= listing.description %></textarea>
+          <p class="field-err">Please enter a description.</p>
+        </div>
+      </div>
+
+      <!-- Card 2: Photo -->
+      <div class="form-card">
+        <p class="form-section-title">
+          <i class="ti ti-photo" aria-hidden="true"></i>
+          Listing photo
+        </p>
+
+        <!-- Current image -->
+        <div class="form-field">
+          <label>Current image</label>
+          <div class="current-img-wrap">
+            <img src="<%= originalImageUrl %>" alt="Current listing image">
+            <span class="current-img-lbl">Current</span>
+          </div>
+        </div>
+
+        <!-- Upload new -->
+        <div class="form-field">
+          <label for="image">Replace with new image</label>
+          <input name="listing[image]" id="image" type="file"
+            class="sp-file" accept="image/*">
+          <p class="field-hint">Leave empty to keep the current image.</p>
+          <div class="img-preview-wrap" id="img-preview-wrap">
+            <img id="img-preview" src="" alt="New image preview">
+            <span class="img-preview-lbl">New image</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Location + Price -->
+      <div class="form-card">
+        <p class="form-section-title">
+          <i class="ti ti-map-pin" aria-hidden="true"></i>
+          Location & pricing
+        </p>
+
+        <div class="form-row" style="margin-bottom:20px;">
+          <div class="form-field" style="margin-bottom:0;">
+            <label for="price">Price / night <span class="req">*</span></label>
+            <div class="input-prefix-wrap">
+              <span class="input-prefix">₹</span>
+              <input name="listing[price]" id="price" type="number"
+                class="sp-input" value="<%= listing.price %>" min="1" required>
+            </div>
+            <p class="field-err">Enter a valid price.</p>
+          </div>
+          <div class="form-field" style="margin-bottom:0;">
+            <label for="country">Country <span class="req">*</span></label>
+            <input name="listing[country]" id="country" type="text"
+              class="sp-input" value="<%= listing.country %>" required>
+            <p class="field-err">Enter a valid country.</p>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="location">City / Location <span class="req">*</span></label>
+          <input name="listing[location]" id="location" type="text"
+            class="sp-input" value="<%= listing.location %>" required>
+          <p class="field-err">Enter a valid location.</p>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-submit-row">
+        <button type="submit" class="btn-submit">
+          <i class="ti ti-check" style="font-size:15px;" aria-hidden="true"></i>
+          Save changes
+        </button>
+        <a href="/listings/<%= listing._id %>" class="btn-cancel">
+          <i class="ti ti-x" style="font-size:14px;" aria-hidden="true"></i>
+          Discard
+        </a>
+      </div>
+
+    </form>
+  </div>
+</div>

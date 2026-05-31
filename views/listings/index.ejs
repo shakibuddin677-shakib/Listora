@@ -1,14 +1,16 @@
 <% layout("/layouts/boilerplate") %>
 
-
 <section id="listingsPage">
   <div class="container">
 
-    <!-- ── Active Search / Filter Feedback Bar ──
-         Shows the user what they're currently filtering by,
-         so they never feel "lost" in filtered results -->
-    <% const hasFilters = (typeof search !== 'undefined' && search) || (typeof category !== 'undefined' && category); %>
+    <%
+      const hasFilters = (typeof search !== 'undefined' && search) ||
+                         (typeof category !== 'undefined' && category) ||
+                         (typeof maxPrice !== 'undefined' && maxPrice) ||
+                         (typeof sort !== 'undefined' && sort);
+    %>
 
+    <!-- Filter Feedback Bar -->
     <% if (hasFilters) { %>
       <div class="filter-feedback-bar">
         <span class="filter-feedback-text">
@@ -20,6 +22,9 @@
           <% if (typeof category !== 'undefined' && category) { %>
             in <strong class="filter-category-badge"><%= category %></strong>
           <% } %>
+          <% if (typeof maxPrice !== 'undefined' && maxPrice) { %>
+            · under <strong>₹<%= parseInt(maxPrice).toLocaleString('en-IN') %></strong>
+          <% } %>
         </span>
         <a href="/listings" class="filter-clear-link">
           <i class="fa-solid fa-xmark me-1"></i>Clear filters
@@ -27,7 +32,7 @@
       </div>
     <% } %>
 
-    <!-- ── Page Header ── -->
+    <!-- Page Header -->
     <div class="listings-header">
       <div>
         <h1 class="listings-title">
@@ -44,9 +49,16 @@
         </p>
       </div>
 
-      <a href="/listings/new" class="btn btn-add-listing">
-        <i class="fa-solid fa-plus me-2"></i>Add Listing
-      </a>
+      <!-- Add Listing only shows to logged-in users in the page header -->
+      <% if (currUser) { %>
+        <a href="/listings/new" class="btn btn-add-listing">
+          <i class="fa-solid fa-plus me-2"></i>Add Listing
+        </a>
+      <% } else { %>
+        <a href="/login" class="btn btn-add-listing">
+          <i class="fa-solid fa-plus me-2"></i>Add Listing
+        </a>
+      <% } %>
     </div>
 
     <!-- ── Listings Grid ── -->
@@ -55,41 +67,68 @@
       <div class="listings-grid">
         <% for (let listing of allListings) { %>
 
+          <%
+            // Compute real average rating from reviews array
+            // Each review must have a .rating field (number 1-5)
+            let avgRating = null;
+            if (listing.reviews && listing.reviews.length > 0) {
+              const sum = listing.reviews.reduce((acc, r) => acc + (r.rating || 0), 0);
+              avgRating = (sum / listing.reviews.length).toFixed(1);
+            }
+
+            // Cloudinary image optimization:
+            // Serves a cropped, WebP-converted, quality-auto version at card size
+            // Falls back to original URL if not a Cloudinary URL
+            let cardImageUrl = listing.image && listing.image.url ? listing.image.url : '';
+            if (cardImageUrl.includes('res.cloudinary.com')) {
+              cardImageUrl = cardImageUrl.replace('/upload/', '/upload/w_600,h_450,c_fill,f_auto,q_auto/');
+            }
+          %>
+
           <div class="listing-card-wrapper">
 
-            <!-- ❤️ Wishlist Heart Button
-                 Positioned absolute over the card image.
-                 The JS toggleLike() function handles the animation.
-                 For real persistence, wire to POST /wishlist/:id -->
+            <!--
+              HEART / WISHLIST BUTTON
+              FIX: auth state is passed from EJS so guests are redirected to login.
+              For logged-in users, the state is seeded from their actual wishlist array.
+            -->
+            <%
+              const isLoggedIn = !!currUser;
+              // Check if this listing is already in the user's wishlist
+              const isWishlisted = isLoggedIn &&
+                currUser.wishlist &&
+                currUser.wishlist.some(id => id.toString() === listing._id.toString());
+            %>
+
             <button
-              class="like-btn"
-              onclick="toggleLike(this, '<%= listing._id %>')"
-              aria-label="Save to wishlist"
-              title="Save to wishlist"
+              class="like-btn <%= isWishlisted ? 'liked' : '' %>"
+        onclick="toggleLike(this, '<%= listing._id %>', '<%= isLoggedIn %>')"
+              aria-label="<%= isWishlisted ? 'Remove from wishlist' : 'Save to wishlist' %>"
+              title="<%= isWishlisted ? 'Remove from wishlist' : 'Save to wishlist' %>"
             >
-              <i class="fa-regular fa-heart"></i>
+              <i class="<%= isWishlisted ? 'fa-solid' : 'fa-regular' %> fa-heart"></i>
             </button>
 
-            <!-- The card itself — links to listing detail page -->
+            <!-- Card link -->
             <a
               href="/listings/<%= listing._id %>"
               class="listing-card"
               aria-label="View <%= listing.title %>"
             >
 
-              <!-- Card Image -->
+              <!-- Image — optimized via Cloudinary transformations -->
               <div class="listing-card-image-wrapper">
                 <img
-                  src="<%= listing.image.url %>"
+                  src="<%= cardImageUrl %>"
                   alt="<%= listing.title %>"
                   class="listing-card-image"
                   loading="lazy"
+                  width="600"
+                  height="450"
                 />
-                <!-- Price badge overlaid on image -->
                 <div class="listing-price-badge">
                   &#8377;<%= listing.price.toLocaleString("en-IN") %><span>/night</span>
                 </div>
-                <!-- Category tag (if listing has a category field) -->
                 <% if (listing.category) { %>
                   <div class="listing-category-tag">
                     <%= listing.category %>
@@ -104,11 +143,18 @@
                   <i class="fa-solid fa-location-dot me-1"></i>
                   <%= listing.location %>, <%= listing.country %>
                 </p>
-                <!-- Rating stars (static 4.8 placeholder — replace with real data) -->
+
+                <!-- FIX: Real average rating; shows "New" when no reviews exist -->
                 <div class="listing-card-rating">
-                  <i class="fa-solid fa-star"></i>
-                  <span>4.8</span>
-                  <span class="rating-count">(<%= listing.reviews.length %>)</span>
+                  <% if (avgRating) { %>
+                    <i class="fa-solid fa-star"></i>
+                    <span><%= avgRating %></span>
+                    <span class="rating-count">(<%= listing.reviews.length %>)</span>
+                  <% } else { %>
+                    <span class="rating-new">
+                      <i class="fa-regular fa-star me-1"></i>New
+                    </span>
+                  <% } %>
                 </div>
               </div>
 
@@ -118,9 +164,21 @@
         <% } %>
       </div>
 
+      <!-- Pagination (rendered only when totalPages is passed from route) -->
+      <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+        <nav class="listings-pagination" aria-label="Listings pages">
+          <% for (let p = 1; p <= totalPages; p++) { %>
+            <a
+              href="/listings?page=<%= p %><%= typeof category !== 'undefined' && category ? '&category=' + category : '' %><%= typeof search !== 'undefined' && search ? '&search=' + search : '' %><%= typeof maxPrice !== 'undefined' && maxPrice ? '&maxPrice=' + maxPrice : '' %><%= typeof sort !== 'undefined' && sort ? '&sort=' + sort : '' %>"
+              class="page-btn <%= (typeof currentPage !== 'undefined' && currentPage == p) ? 'active' : '' %>"
+            ><%= p %></a>
+          <% } %>
+        </nav>
+      <% } %>
+
     <% } else { %>
 
-      <!-- ── Empty State ── -->
+      <!-- Empty State -->
       <div class="listings-empty">
         <div class="listings-empty-icon-wrapper">
           <i class="fa-regular fa-compass"></i>
@@ -135,7 +193,7 @@
           <% } %>
         </p>
         <% if (!hasFilters) { %>
-          <a href="/listings/new" class="btn btn-add-listing mt-3">
+          <a href="<%= currUser ? '/listings/new' : '/login' %>" class="btn btn-add-listing mt-3">
             <i class="fa-solid fa-plus me-2"></i>Add First Listing
           </a>
         <% } %>
@@ -146,110 +204,73 @@
   </div>
 </section>
 
-
 <script>
-  /**
-   * toggleLike — handles the heart/wishlist button on listing cards
-   * ────────────────────────────────────────────────────────────────
-   * @param {HTMLElement} btn      - the button element that was clicked
-   * @param {string}      listingId - the MongoDB _id of the listing
-   *
-   * What it does:
-   * 1. Toggles the 'liked' CSS class (changes icon appearance)
-   * 2. Plays a small scale-up animation
-   * 3. Sends a POST to /wishlist/toggle/:id (you need this route)
-   * 4. Shows a small toast notification
-   *
-   * TO WIRE UP THE BACKEND:
-   *   router.post("/wishlist/toggle/:id", isLoggedIn, async (req, res) => {
-   *     const user = await User.findById(req.user._id);
-   *     const idx = user.wishlist.indexOf(req.params.id);
-   *     if (idx === -1) {
-   *       user.wishlist.push(req.params.id);  // add
-   *     } else {
-   *       user.wishlist.splice(idx, 1);        // remove
-   *     }
-   *     await user.save();
-   *     res.json({ liked: idx === -1 });
-   *   });
+  /*
+   * toggleLike — wishlist heart button
+   * FIX 1: isLoggedIn is injected from EJS — guests are sent to /login
+   * FIX 2: Errors from the fetch are surfaced as a toast, not silently ignored
    */
-  function toggleLike(btn, listingId) {
-    // Toggle the 'liked' class to visually fill the heart
-    const isNowLiked = btn.classList.toggle('liked');
-
-    // Swap icon between outlined and solid heart
-    const icon = btn.querySelector('i');
-    if (isNowLiked) {
-      icon.className = 'fa-solid fa-heart';   // filled heart
-    } else {
-      icon.className = 'fa-regular fa-heart'; // outlined heart
+  function toggleLike(btn, listingId, isLoggedIn) {
+    // Redirect guests to login instead of showing fake feedback
+    if (!isLoggedIn) {
+      window.location.href = '/login?next=/listings';
+      return;
     }
 
-    // Quick bounce animation
+    const wasLiked = btn.classList.contains('liked');
+    const isNowLiked = !wasLiked;
+
+    // Optimistic UI update
+    btn.classList.toggle('liked', isNowLiked);
+    const icon = btn.querySelector('i');
+    icon.className = isNowLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+    btn.setAttribute('aria-label', isNowLiked ? 'Remove from wishlist' : 'Save to wishlist');
+
+    // Bounce animation
     btn.style.transform = 'scale(1.3)';
     setTimeout(() => { btn.style.transform = ''; }, 200);
 
-    // Optional: send to server (won't break if route doesn't exist yet)
-    fetch(`/wishlist/toggle/${listingId}`, { method: 'POST' })
-      .catch(() => {}); // silently ignore if route not set up yet
-
-    // Show mini toast feedback
-    showLikeToast(isNowLiked);
+    // Send to server — roll back on failure
+    fetch(`/wishlist/toggle/${listingId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Server error');
+      return res.json();
+    })
+    .then(() => {
+      showToast(
+        isNowLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart',
+        isNowLiked ? '#e85d3a' : '#6b7280',
+        isNowLiked ? 'Saved to wishlist' : 'Removed from wishlist'
+      );
+    })
+    .catch(() => {
+      // Roll back the optimistic update on failure
+      btn.classList.toggle('liked', wasLiked);
+      icon.className = wasLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+      showToast('fa-solid fa-circle-exclamation', '#dc2626', 'Could not update wishlist');
+    });
   }
 
-  /**
-   * showLikeToast — tiny feedback toast for like/unlike actions
-   * Creates a temporary element, shows it for 2s, then removes it.
+  /*
+   * showToast — reusable toast notification
+   * FIX: @keyframes is no longer injected on every call; it lives in index.css
    */
-  function showLikeToast(liked) {
-    // Remove any existing toast first
+  function showToast(iconClass, iconColor, message) {
     const existing = document.getElementById('likeToast');
     if (existing) existing.remove();
 
-    // Create the toast element
     const toast = document.createElement('div');
     toast.id = 'likeToast';
-    toast.style.cssText = `
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--bg-surface);
-      color: var(--text-body);
-      border: 1px solid var(--border-color);
-      border-radius: 50px;
-      padding: 0.6rem 1.25rem;
-      font-size: 0.875rem;
-      font-weight: 500;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      animation: toastIn 0.25s ease;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-    `;
-    toast.innerHTML = liked
-      ? '<i class="fa-solid fa-heart" style="color:#e85d3a"></i> Saved to wishlist'
-      : '<i class="fa-regular fa-heart" style="color:#6b7280"></i> Removed from wishlist';
-
+    toast.className = 'listing-toast';
+    toast.innerHTML = `<i class="${iconClass}" style="color:${iconColor}"></i> ${message}`;
     document.body.appendChild(toast);
 
-    // Auto remove after 2 seconds
     setTimeout(() => {
-      toast.style.opacity = '0';
-      toast.style.transition = 'opacity 0.3s';
+      toast.classList.add('toast-hide');
       setTimeout(() => toast.remove(), 300);
-    }, 2000);
+    }, 2200);
   }
-
-  // CSS for the toast animation (injected once)
-  const toastStyle = document.createElement('style');
-  toastStyle.textContent = `
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateX(-50%) translateY(8px); }
-      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
-  `;
-  document.head.appendChild(toastStyle);
 </script>

@@ -1,8 +1,17 @@
 const Listing = require("../models/listing");
 
 module.exports.index = async (req, res) => {
-  const allListings = await Listing.find({});
-  res.render("listings/index.ejs", {allListings});
+  const allListings = await Listing.find({}).populate("reviews");
+
+  res.render("listings/index.ejs", {
+    allListings,
+    currentPage: 1,
+    totalPages: 1,
+    search: "",
+    category: "",
+    maxPrice: "",
+    sort: ""
+  });
 };
 
 module.exports.renderNewForm = (req, res) => {

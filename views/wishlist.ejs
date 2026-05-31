@@ -1,0 +1,173 @@
+<% layout("/layouts/boilerplate") %>
+
+<section id="listingsPage">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="listings-header">
+      <div>
+        <h1 class="listings-title">
+          <i class="fa-regular fa-heart me-2" style="color: var(--brand);"></i>
+          My Wishlist
+        </h1>
+        <p class="listings-subtitle">
+          <%= savedListings.length %> saved property <%= savedListings.length !== 1 ? 'ies' : 'y' %>
+        </p>
+      </div>
+      <a href="/listings" class="btn btn-add-listing">
+        <i class="fa-solid fa-compass me-2"></i>Explore More
+      </a>
+    </div>
+
+    <% if (savedListings.length > 0) { %>
+
+      <div class="listings-grid">
+        <% for (let listing of savedListings) { %>
+          <%
+            // Real avg rating
+            let avgRating = null;
+            if (listing.reviews && listing.reviews.length > 0) {
+              const sum = listing.reviews.reduce((acc, r) => acc + (r.rating || 0), 0);
+              avgRating = (sum / listing.reviews.length).toFixed(1);
+            }
+
+            // Cloudinary optimization
+            let cardImageUrl = listing.image && listing.image.url ? listing.image.url : '';
+            if (cardImageUrl.includes('res.cloudinary.com')) {
+              cardImageUrl = cardImageUrl.replace('/upload/', '/upload/w_600,h_450,c_fill,f_auto,q_auto/');
+            }
+          %>
+
+          <div class="listing-card-wrapper">
+
+            <!-- Heart is pre-filled since this IS the wishlist page -->
+            <button
+              class="like-btn liked"
+              onclick="toggleLike(this, '<%= listing._id %>', true)"
+              aria-label="Remove from wishlist"
+              title="Remove from wishlist"
+            >
+              <i class="fa-solid fa-heart"></i>
+            </button>
+
+            <a href="/listings/<%= listing._id %>" class="listing-card" aria-label="View <%= listing.title %>">
+
+              <div class="listing-card-image-wrapper">
+                <img
+                  src="<%= cardImageUrl %>"
+                  alt="<%= listing.title %>"
+                  class="listing-card-image"
+                  loading="lazy"
+                  width="600"
+                  height="450"
+                />
+                <div class="listing-price-badge">
+                  &#8377;<%= listing.price.toLocaleString("en-IN") %><span>/night</span>
+                </div>
+                <% if (listing.category) { %>
+                  <div class="listing-category-tag"><%= listing.category %></div>
+                <% } %>
+              </div>
+
+              <div class="listing-card-body">
+                <h2 class="listing-card-title"><%= listing.title %></h2>
+                <p class="listing-card-location">
+                  <i class="fa-solid fa-location-dot me-1"></i>
+                  <%= listing.location %>, <%= listing.country %>
+                </p>
+                <div class="listing-card-rating">
+                  <% if (avgRating) { %>
+                    <i class="fa-solid fa-star"></i>
+                    <span><%= avgRating %></span>
+                    <span class="rating-count">(<%= listing.reviews.length %>)</span>
+                  <% } else { %>
+                    <span class="rating-new"><i class="fa-regular fa-star me-1"></i>New</span>
+                  <% } %>
+                </div>
+              </div>
+
+            </a>
+          </div>
+        <% } %>
+      </div>
+
+    <% } else { %>
+
+      <!-- Empty wishlist state -->
+      <div class="listings-empty">
+        <div class="listings-empty-icon-wrapper">
+          <i class="fa-regular fa-heart"></i>
+        </div>
+        <h3>No saved properties yet</h3>
+        <p>
+          Browse listings and tap the <i class="fa-regular fa-heart" style="color:var(--brand)"></i>
+          to save your favourites here.
+        </p>
+        <a href="/listings" class="btn btn-add-listing mt-3">
+          <i class="fa-solid fa-compass me-2"></i>Start Exploring
+        </a>
+      </div>
+
+    <% } %>
+
+  </div>
+</section>
+
+<script>
+  // Same toggleLike function as index.ejs
+  // When a user un-hearts on the wishlist page, remove the card from view
+  function toggleLike(btn, listingId, isLoggedIn) {
+    if (!isLoggedIn) {
+      window.location.href = '/login?next=/wishlist';
+      return;
+    }
+
+    fetch(`/wishlist/toggle/${listingId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Server error');
+      return res.json();
+    })
+    .then(data => {
+      if (!data.liked) {
+        // Remove the card from the wishlist page with a fade animation
+        const card = btn.closest('.listing-card-wrapper');
+        card.style.transition = 'opacity 0.3s, transform 0.3s';
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          card.remove();
+          // Update the subtitle count
+          const remaining = document.querySelectorAll('.listing-card-wrapper').length;
+          const subtitle = document.querySelector('.listings-subtitle');
+          if (subtitle) {
+            subtitle.textContent = `${remaining} saved propert${remaining !== 1 ? 'ies' : 'y'}`;
+          }
+          // Show empty state if no cards left
+          if (remaining === 0) {
+            location.reload();
+          }
+        }, 300);
+      }
+    })
+    .catch(() => {
+      showToast('fa-solid fa-circle-exclamation', '#dc2626', 'Could not update wishlist');
+    });
+  }
+
+  function showToast(iconClass, iconColor, message) {
+    const existing = document.getElementById('likeToast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.id = 'likeToast';
+    toast.className = 'listing-toast';
+    toast.innerHTML = `<i class="${iconClass}" style="color:${iconColor}"></i> ${message}`;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add('toast-hide');
+      setTimeout(() => toast.remove(), 300);
+    }, 2200);
+  }
+</script>

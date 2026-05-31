@@ -1,4 +1,3 @@
-
 <!-- ── MAIN NAV BAR ── -->
 <nav class="navbar navbar-expand-lg sticky-top" id="mainNavbar">
   <div class="container">
@@ -9,7 +8,7 @@
       <span>Listora</span>
     </a>
 
-    <!-- MOBILE: dark toggle + hamburger side by side -->
+    <!-- MOBILE: dark toggle + hamburger -->
     <div class="d-flex align-items-center gap-2 d-lg-none">
       <button class="dark-toggle" id="darkToggleMobile" onclick="toggleDarkMode()" aria-label="Toggle dark mode">
         <i class="fa-solid fa-moon" id="darkIconMobile"></i>
@@ -30,23 +29,17 @@
     <!-- COLLAPSIBLE CONTENT -->
     <div class="collapse navbar-collapse" id="navbarNav">
 
-      <!-- Left nav links -->
+      <!-- Left nav links — only Explore, no duplicate Add Listing -->
       <ul class="navbar-nav me-auto gap-1">
-        
         <li class="nav-item">
           <a class="nav-link" href="/listings">Explore</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/listings/new">
-            <i class="fa-solid fa-plus me-1"></i>Add Listing
-          </a>
         </li>
       </ul>
 
       <!-- Right: dark toggle + auth -->
       <ul class="navbar-nav align-items-lg-center gap-2">
 
-        <!-- Dark mode toggle — desktop only (mobile version is above) -->
+        <!-- Dark mode toggle — desktop only -->
         <li class="nav-item d-none d-lg-flex align-items-center">
           <button class="dark-toggle" id="darkToggleDesktop" onclick="toggleDarkMode()" aria-label="Toggle dark mode">
             <i class="fa-solid fa-moon" id="darkIconDesktop"></i>
@@ -55,7 +48,7 @@
 
         <% if (!currUser) { %>
 
-          <!-- NOT logged in: Sign Up + Login -->
+          <!-- NOT logged in -->
           <li class="nav-item">
             <a class="nav-link nav-signup-link" href="/signup">Sign Up</a>
           </li>
@@ -66,8 +59,6 @@
         <% } else { %>
 
           <!-- LOGGED IN: Wishlist icon + user dropdown -->
-
-          <!-- Wishlist shortcut -->
           <li class="nav-item">
             <a class="nav-icon-btn" href="/wishlist" aria-label="Wishlist">
               <i class="fa-regular fa-heart"></i>
@@ -76,17 +67,12 @@
 
           <!-- User avatar dropdown -->
           <li class="nav-item dropdown">
-            <!--
-              data-bs-toggle="dropdown" opens Bootstrap's dropdown menu.
-              The avatar shows the first letter of the username.
-            -->
             <button
               class="nav-avatar-btn"
               data-bs-toggle="dropdown"
               aria-expanded="false"
               aria-label="User menu"
             >
-              <!-- Avatar circle with first letter of username -->
               <span class="nav-avatar-letter">
                 <%= currUser.username.charAt(0).toUpperCase() %>
               </span>
@@ -96,7 +82,6 @@
               <i class="fa-solid fa-chevron-down nav-avatar-chevron"></i>
             </button>
 
-            <!-- Dropdown menu items -->
             <ul class="dropdown-menu dropdown-menu-end nav-dropdown">
               <li class="nav-dropdown-header">
                 Signed in as <strong><%= currUser.username %></strong>
@@ -129,14 +114,15 @@
   </div>
 </nav>
 
+<!-- ── SEARCH SECTION (proper wrapper so CSS #searchSection works) ── -->
+<section id="searchSection">
   <div class="container">
 
-    <!-- ── Main Search Bar ── -->
+    <!-- Search Bar -->
     <form action="/listings" method="GET" class="search-bar-form" id="searchForm">
-
       <div class="search-bar">
 
-        <!-- Location input -->
+        <!-- Location -->
         <div class="search-field search-field-location">
           <label class="search-field-label">Where</label>
           <input
@@ -150,70 +136,78 @@
           />
         </div>
 
-        <!-- Divider -->
         <div class="search-divider"></div>
 
-        <!-- Price range -->
+        <!-- Max Price — expanded range for budget + luxury -->
         <div class="search-field search-field-price">
           <label class="search-field-label">Max Price</label>
           <select name="maxPrice" class="search-field-input search-select">
-            <option value="">Any price</option>
-            <option value="1000">Under ₹1,000</option>
-            <option value="3000">Under ₹3,000</option>
-            <option value="5000">Under ₹5,000</option>
-            <option value="10000">Under ₹10,000</option>
+            <option value="" <%= (typeof maxPrice === 'undefined' || maxPrice === '') ? 'selected' : '' %>>Any price</option>
+            <option value="500"   <%= (typeof maxPrice !== 'undefined' && maxPrice == '500')   ? 'selected' : '' %>>Under ₹500</option>
+            <option value="1000"  <%= (typeof maxPrice !== 'undefined' && maxPrice == '1000')  ? 'selected' : '' %>>Under ₹1,000</option>
+            <option value="3000"  <%= (typeof maxPrice !== 'undefined' && maxPrice == '3000')  ? 'selected' : '' %>>Under ₹3,000</option>
+            <option value="5000"  <%= (typeof maxPrice !== 'undefined' && maxPrice == '5000')  ? 'selected' : '' %>>Under ₹5,000</option>
+            <option value="10000" <%= (typeof maxPrice !== 'undefined' && maxPrice == '10000') ? 'selected' : '' %>>Under ₹10,000</option>
+            <option value="20000" <%= (typeof maxPrice !== 'undefined' && maxPrice == '20000') ? 'selected' : '' %>>Under ₹20,000</option>
           </select>
         </div>
 
-        <!-- Divider -->
         <div class="search-divider"></div>
 
-        <!-- Sort by -->
+        <!-- Sort -->
         <div class="search-field search-field-sort">
           <label class="search-field-label">Sort By</label>
           <select name="sort" class="search-field-input search-select">
-            <option value="">Relevance</option>
-            <option value="price_asc">Price: Low to High</option>
-            <option value="price_desc">Price: High to Low</option>
-            <option value="newest">Newest First</option>
+            <option value=""           <%= (typeof sort === 'undefined' || sort === '') ? 'selected' : '' %>>Relevance</option>
+            <option value="price_asc"  <%= (typeof sort !== 'undefined' && sort === 'price_asc')  ? 'selected' : '' %>>Price: Low → High</option>
+            <option value="price_desc" <%= (typeof sort !== 'undefined' && sort === 'price_desc') ? 'selected' : '' %>>Price: High → Low</option>
+            <option value="newest"     <%= (typeof sort !== 'undefined' && sort === 'newest')     ? 'selected' : '' %>>Newest First</option>
           </select>
         </div>
 
-        <!-- Search button -->
         <button type="submit" class="search-btn" aria-label="Search">
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
 
       </div>
-
     </form>
 
     <!-- ── Category Filter Chips ──
-         Clicking a chip adds ?category=... to the URL and submits.
-         Active chip (matching current URL param) gets highlighted. -->
+         FIX: All chips now preserve ALL active query params (search, maxPrice, sort)
+         so clicking a category never silently resets your other filters. -->
     <div class="category-chips" id="categoryChips">
 
       <%
-        // List of categories with their Font Awesome icons
-        // Add/remove categories here as needed
         const categories = [
-          { value: "beach",     icon: "fa-umbrella-beach",  label: "Beach"     },
-          { value: "mountain",  icon: "fa-mountain",        label: "Mountains" },
-          { value: "city",      icon: "fa-city",            label: "City"      },
-          { value: "forest",    icon: "fa-tree",            label: "Forest"    },
-          { value: "desert",    icon: "fa-sun",             label: "Desert"    },
-          { value: "lake",      icon: "fa-water",           label: "Lakes"     },
-          { value: "heritage",  icon: "fa-landmark",        label: "Heritage"  },
-          { value: "camping",   icon: "fa-campground",      label: "Camping"   },
+          { value: "beach",    icon: "fa-umbrella-beach", label: "Beach"    },
+          { value: "mountain", icon: "fa-mountain",       label: "Mountains"},
+          { value: "city",     icon: "fa-city",           label: "City"     },
+          { value: "forest",   icon: "fa-tree",           label: "Forest"   },
+          { value: "desert",   icon: "fa-sun",            label: "Desert"   },
+          { value: "lake",     icon: "fa-water",          label: "Lakes"    },
+          { value: "heritage", icon: "fa-landmark",       label: "Heritage" },
+          { value: "camping",  icon: "fa-campground",     label: "Camping"  },
         ];
 
-        // Get the current active category from the URL query string
         const activeCategory = typeof category !== 'undefined' ? category : '';
+        const activeSearch   = typeof search   !== 'undefined' ? search   : '';
+        const activeMaxPrice = typeof maxPrice !== 'undefined' ? maxPrice : '';
+        const activeSort     = typeof sort     !== 'undefined' ? sort     : '';
+
+        // Helper: build a chip URL preserving all current filters except category
+        function chipUrl(catValue) {
+          const params = [];
+          if (catValue)      params.push('category=' + catValue);
+          if (activeSearch)  params.push('search='   + encodeURIComponent(activeSearch));
+          if (activeMaxPrice)params.push('maxPrice=' + activeMaxPrice);
+          if (activeSort)    params.push('sort='     + activeSort);
+          return '/listings' + (params.length ? '?' + params.join('&') : '');
+        }
       %>
 
       <% for (let cat of categories) { %>
         <a
-          href="/listings?category=<%= cat.value %><%= typeof search !== 'undefined' && search ? '&search=' + search : '' %>"
+          href="<%= chipUrl(cat.value) %>"
           class="category-chip <%= activeCategory === cat.value ? 'active' : '' %>"
           aria-label="Filter by <%= cat.label %>"
         >
@@ -223,81 +217,37 @@
       <% } %>
 
       <!-- Clear all filters -->
-      <% if (activeCategory || (typeof search !== 'undefined' && search)) { %>
+      <% if (activeCategory || activeSearch || activeMaxPrice || activeSort) { %>
         <a href="/listings" class="category-chip chip-clear">
           <i class="fa-solid fa-xmark"></i>
-          <span>Clear</span>
+          <span>Clear all</span>
         </a>
       <% } %>
 
     </div>
 
   </div>
-</div>
+</section>
 
 <script>
-  /**
-   * toggleDarkMode
-   * ──────────────
-   * Called when the user clicks the sun/moon button.
-   *
-   * Steps:
-   * 1. Read the current theme from <html data-theme="...">
-   * 2. Flip it to the opposite
-   * 3. Update the <html> attribute (CSS variables change instantly)
-   * 4. Save the new preference to localStorage (persists on refresh)
-   * 5. Update all toggle button icons (desktop + mobile)
-   */
   function toggleDarkMode() {
-    // Step 1: What's the current theme?
     const html = document.documentElement;
-    const currentTheme = html.getAttribute('data-theme');
-
-    // Step 2: Flip it
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-    // Step 3: Apply immediately (CSS variables update)
+    const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', newTheme);
-
-    // Step 4: Persist in localStorage so it survives page reload
-    localStorage.setItem('wandernest-theme', newTheme);
-
-    // Step 5: Update all icons
+    // FIX: renamed key from 'wandernest-theme' to 'listora-theme'
+    localStorage.setItem('listora-theme', newTheme);
     updateDarkModeIcons(newTheme);
   }
 
-  /**
-   * updateDarkModeIcons
-   * ───────────────────
-   * Sets the icon to ☀️ (sun) in dark mode and 🌙 (moon) in light mode.
-   * We have two buttons (desktop + mobile) so we update both.
-   *
-   * @param {string} theme - 'dark' or 'light'
-   */
   function updateDarkModeIcons(theme) {
     const isDark = theme === 'dark';
-
-    // Select all toggle icon elements (desktop + mobile)
-    const icons = document.querySelectorAll('[id^="darkIcon"]');
-
-    icons.forEach(icon => {
-      if (isDark) {
-        // In dark mode: show sun (to switch back to light)
-        icon.className = 'fa-solid fa-sun';
-      } else {
-        // In light mode: show moon (to switch to dark)
-        icon.className = 'fa-solid fa-moon';
-      }
+    document.querySelectorAll('[id^="darkIcon"]').forEach(icon => {
+      icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     });
   }
 
-  /**
-   * Run on page load — sync the icon with the saved theme.
-   * (The theme itself was already applied by darkmode.ejs before body rendered)
-   */
   document.addEventListener('DOMContentLoaded', function () {
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
     updateDarkModeIcons(currentTheme);
   });
 </script>
-

@@ -133,10 +133,10 @@ app.use((req, res, next) => {
 /* ---------------- Error Handler ---------------- */
 
 app.use((err, req, res, next) => {
+    console.error("ERROR:", err);
+    console.error(err.stack);
+
     let { statusCode = 500, message = "Something went wrong!" } = err;
 
-    res.status(statusCode).render("error.ejs", {
-        message
-    });
+    res.status(statusCode).render("error.ejs", { message });
 });
-

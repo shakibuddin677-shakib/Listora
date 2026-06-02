@@ -97,7 +97,9 @@
               // Check if this listing is already in the user's wishlist
               const isWishlisted = isLoggedIn &&
                 currUser.wishlist &&
-                currUser.wishlist.some(id => id.toString() === listing._id.toString());
+                (currUser.wishlist || []).some(
+                    id => id.toString() === listing._id.toString()
+                  )
             %>
 
             <button

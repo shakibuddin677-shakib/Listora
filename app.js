@@ -3,6 +3,7 @@ if (process.env.NODE_ENV != "production") {
     require("dotenv").config();
 }
 
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -38,8 +39,11 @@ async function main() {
 main()
     .then(() => {
         console.log("Connected to DB");
-        app.listen(8080, () => { 
-            console.log("Server is running on port 8080");
+
+        const PORT = process.env.PORT || 8080;
+
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
         });
     })
     .catch((err) => {
@@ -120,6 +124,21 @@ app.use("/", wishlistRouter);
 
 app.get("/", (req, res) => {
     res.redirect("/listings");
+});
+/* ---------------- Home Route ---------------- */
+
+app.get("/", (req, res) => {
+    res.redirect("/listings");
+});
+
+// 👇 Isko yahan add karo
+app.get("/test-cloudinary", (req, res) => {
+    res.json({
+        cloud_name: process.env.CLOUD_NAME,
+        api_key_exists: !!process.env.CLOUD_API_KEY,
+        secret_exists: !!process.env.CLOUD_API_SECRET,
+        secret_length: process.env.CLOUD_API_SECRET?.length || 0,
+    });
 });
 
 /* ---------------- 404 Handler ---------------- */

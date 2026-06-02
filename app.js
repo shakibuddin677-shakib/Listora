@@ -29,14 +29,16 @@ const wishlistRouter = require("./routes/wishlist.js");
 const dbUrl = process.env.ATLASDB_URL;
 
 async function main() {
-    await mongoose.connect(dbUrl);
+    await mongoose.connect(dbUrl, {
+        tls: true,
+        tlsAllowInvalidCertificates: false,
+    });
 }
 
 main()
     .then(() => {
         console.log("Connected to DB");
-
-        app.listen(8080, () => {
+        app.listen(8080, () => { 
             console.log("Server is running on port 8080");
         });
     })
@@ -66,7 +68,8 @@ const store = MongoStore.create({
     crypto: {
         secret: process.env.SECRET
     },
-    touchAfter: 24 * 3600
+    touchAfter: 24 * 3600,
+    mongooseConnection: mongoose.connection, // existing connection use karo
 });
 
 store.on("error", (err) => {

@@ -169,11 +169,11 @@
   }
 
   /* Headings */
-  h1, h2, h3, h4, h5, h6,
-  .auth-title, .form-card-title, .listings-title,
-  .listing-card-title {
-    color: var(--text-heading) !important;
-  }
+  h1, h2, h3, h4, h5, h6:not(.footer-heading),
+.auth-title, .form-card-title, .listings-title,
+.listing-card-title {
+  color: var(--text-heading) !important;
+}
 
   /* Muted text */
   .text-muted, .auth-subtitle, .form-card-subtitle,

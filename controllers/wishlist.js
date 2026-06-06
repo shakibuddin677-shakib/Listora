@@ -1,29 +1,50 @@
-const User = require("../models/user");
 
+const User    = require("../models/user.js");
+const Listing = require("../models/listing.js");
+
+// ─────────────────────────────────────────────────────────────
+// GET /wishlist
+// Populate the logged-in user's wishlist with full listing data
+// ─────────────────────────────────────────────────────────────
+module.exports.getWishlist = async (req, res) => {
+  const user = await User.findById(req.user._id).populate({
+    path:     "wishlist",
+    populate: { path: "reviews" },   // needed for avg-rating calc in EJS
+  });
+
+  const savedListings = user.wishlist || [];
+
+  res.render("listings/wishlist.ejs", { savedListings });
+};
+
+// ─────────────────────────────────────────────────────────────
+// POST /wishlist/toggle/:id
+// Add or remove a listing from wishlist — returns JSON
+// ─────────────────────────────────────────────────────────────
 module.exports.toggleWishlist = async (req, res) => {
-    try {
-        const user = await User.findById(req.user._id);
-        const listingId = req.params.id;
+  const { id } = req.params;
+  const user   = await User.findById(req.user._id);
 
-        const exists = user.wishlist.includes(listingId);
+  if (!user) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
 
-        if (exists) {
-            user.wishlist.pull(listingId);
-        } else {
-            user.wishlist.push(listingId);
-        }
+  if (!user.wishlist) user.wishlist = [];
 
-        await user.save();
+  const idx = user.wishlist.findIndex(
+    (wId) => wId.toString() === id.toString()
+  );
 
-        res.json({
-            success: true,
-            wishlisted: !exists
-        });
+  let liked;
+  if (idx === -1) {
+    user.wishlist.push(id);
+    liked = true;
+  } else {
+    user.wishlist.splice(idx, 1);
+    liked = false;
+  }
 
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Wishlist update failed"
-        });
-    }
+  await user.save();
+
+  return res.json({ liked });
 };

@@ -1,0 +1,228 @@
+<% layout("/layouts/boilerplate") %>
+
+<section id="listingsPage">
+  <div class="container">
+
+    <!-- ── Page Header ── -->
+    <div class="listings-header">
+      <div>
+        <h1 class="listings-title">
+          <i class="fa-regular fa-heart me-2" style="color: var(--brand);"></i>
+          My Wishlist
+        </h1>
+        <p class="listings-subtitle" id="wishlistSubtitle">
+          <% if (savedListings.length === 0) { %>
+            No saved properties yet
+          <% } else { %>
+            <%= savedListings.length %> saved propert<%= savedListings.length !== 1 ? 'ies' : 'y' %>
+          <% } %>
+        </p>
+      </div>
+      <a href="/listings" class="btn btn-add-listing">
+        <i class="fa-solid fa-compass me-2"></i>Explore More
+      </a>
+    </div>
+
+    <% if (savedListings.length > 0) { %>
+
+      <!-- ── Listings Grid ── -->
+      <div class="listings-grid" id="wishlistGrid">
+
+        <% for (let listing of savedListings) { %>
+          <%
+            /* Average rating from reviews array */
+            let avgRating = null;
+            if (listing.reviews && listing.reviews.length > 0) {
+              const sum = listing.reviews.reduce((acc, r) => acc + (r.rating || 0), 0);
+              avgRating = (sum / listing.reviews.length).toFixed(1);
+            }
+
+            /* Cloudinary optimised card image */
+            let cardImageUrl = listing.image && listing.image.url ? listing.image.url : '';
+            if (cardImageUrl.includes('res.cloudinary.com')) {
+              cardImageUrl = cardImageUrl.replace('/upload/', '/upload/w_600,h_450,c_fill,f_auto,q_auto/');
+            }
+          %>
+
+          <!-- Card wrapper — id used by JS to remove on un-heart -->
+          <div class="listing-card-wrapper" id="wish-<%= listing._id %>">
+
+            <!-- Heart button — always filled (this IS the wishlist) -->
+            <button
+              class="like-btn liked"
+              onclick="removeFromWishlist(this, '<%= listing._id %>')"
+              aria-label="Remove from wishlist"
+              title="Remove from wishlist"
+            >
+              <i class="fa-solid fa-heart"></i>
+            </button>
+
+            <!-- Card link -->
+            <a
+              href="/listings/<%= listing._id %>"
+              class="listing-card"
+              aria-label="View <%= listing.title %>"
+            >
+
+              <!-- Image -->
+              <div class="listing-card-image-wrapper">
+                <img
+                  src="<%= cardImageUrl %>"
+                  alt="<%= listing.title %>"
+                  class="listing-card-image"
+                  loading="lazy"
+                  width="600"
+                  height="450"
+                  onerror="this.src='https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=600&q=80'"
+                />
+                <!-- Price badge -->
+                <div class="listing-price-badge">
+                  &#8377;<%= listing.price.toLocaleString("en-IN") %><span>/night</span>
+                </div>
+                <!-- Category tag -->
+                <% if (listing.category) { %>
+                  <div class="listing-category-tag"><%= listing.category %></div>
+                <% } %>
+              </div>
+
+              <!-- Body -->
+              <div class="listing-card-body">
+                <h2 class="listing-card-title"><%= listing.title %></h2>
+                <p class="listing-card-location">
+                  <i class="fa-solid fa-location-dot me-1"></i>
+                  <%= listing.location %>, <%= listing.country %>
+                </p>
+                <div class="listing-card-rating">
+                  <% if (avgRating) { %>
+                    <i class="fa-solid fa-star"></i>
+                    <span><%= avgRating %></span>
+                    <span class="rating-count">(<%= listing.reviews.length %>)</span>
+                  <% } else { %>
+                    <span class="rating-new">
+                      <i class="fa-regular fa-star me-1"></i>New
+                    </span>
+                  <% } %>
+                </div>
+              </div>
+
+            </a>
+          </div><!-- /.listing-card-wrapper -->
+
+        <% } %>
+
+      </div><!-- /#wishlistGrid -->
+
+    <% } else { %>
+
+      <!-- ── Empty state ── -->
+      <div class="listings-empty" id="emptyState">
+        <div class="listings-empty-icon-wrapper">
+          <i class="fa-regular fa-heart"></i>
+        </div>
+        <h3>No saved properties yet</h3>
+        <p>
+          Browse listings and tap the
+          <i class="fa-regular fa-heart" style="color:var(--brand)"></i>
+          to save your favourites here.
+        </p>
+        <a href="/listings" class="btn btn-add-listing mt-3">
+          <i class="fa-solid fa-compass me-2"></i>Start Exploring
+        </a>
+      </div>
+
+    <% } %>
+
+  </div>
+</section>
+
+
+<script>
+  /**
+   * removeFromWishlist()
+   * Called when the user taps the filled heart on this page.
+   * Sends a toggle POST, then fades the card out.
+   * If the grid becomes empty, swaps in the empty-state HTML.
+   */
+  function removeFromWishlist(btn, listingId) {
+    fetch('/wishlist/toggle/' + listingId, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+    })
+    .then(function(res) {
+      if (!res.ok) throw new Error('Server error');
+      return res.json();
+    })
+    .then(function(data) {
+      if (!data.liked) {
+
+        // ── Fade card out ──
+        var card = document.getElementById('wish-' + listingId);
+        if (card) {
+          card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+          card.style.opacity    = '0';
+          card.style.transform  = 'scale(0.95)';
+
+          setTimeout(function() {
+            card.remove();
+
+            // Update subtitle count
+            var remaining = document.querySelectorAll('.listing-card-wrapper').length;
+            var subtitle  = document.getElementById('wishlistSubtitle');
+            if (subtitle) {
+              subtitle.textContent = remaining === 0
+                ? 'No saved properties yet'
+                : remaining + ' saved propert' + (remaining !== 1 ? 'ies' : 'y');
+            }
+
+            // If grid is now empty, replace it with the empty state
+            if (remaining === 0) {
+              var grid = document.getElementById('wishlistGrid');
+              if (grid) grid.remove();
+
+              var container = document.querySelector('#listingsPage .container');
+              var empty     = document.createElement('div');
+              empty.className = 'listings-empty';
+              empty.id        = 'emptyState';
+              empty.innerHTML  = '\
+                <div class="listings-empty-icon-wrapper">\
+                  <i class="fa-regular fa-heart"></i>\
+                </div>\
+                <h3>No saved properties yet</h3>\
+                <p>\
+                  Browse listings and tap the\
+                  <i class="fa-regular fa-heart" style="color:var(--brand)"></i>\
+                  to save your favourites here.\
+                </p>\
+                <a href="/listings" class="btn btn-add-listing mt-3">\
+                  <i class="fa-solid fa-compass me-2"></i>Start Exploring\
+                </a>';
+              container.appendChild(empty);
+            }
+          }, 300);
+        }
+
+        showToast('fa-solid fa-heart-crack', '#dc2626', 'Removed from wishlist');
+      }
+    })
+    .catch(function() {
+      showToast('fa-solid fa-circle-exclamation', '#dc2626', 'Could not update wishlist');
+    });
+  }
+
+  /** Same toast helper used across all listing pages */
+  function showToast(iconClass, iconColor, message) {
+    var existing = document.getElementById('likeToast');
+    if (existing) existing.remove();
+
+    var toast        = document.createElement('div');
+    toast.id         = 'likeToast';
+    toast.className  = 'listing-toast';
+    toast.innerHTML  = '<i class="' + iconClass + '" style="color:' + iconColor + '"></i> ' + message;
+    document.body.appendChild(toast);
+
+    setTimeout(function() {
+      toast.classList.add('toast-hide');
+      setTimeout(function() { toast.remove(); }, 300);
+    }, 2200);
+  }
+</script>

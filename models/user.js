@@ -1,27 +1,27 @@
+
+
 const mongoose = require("mongoose");
+const passportLocalMongoose = require("passport-local-mongoose").default;
 
-const passportLocalMongoose =
-require("passport-local-mongoose").default ||
-require("passport-local-mongoose");
+const userSchema = new mongoose.Schema({
 
-const Schema = mongoose.Schema;
+  email: {
+    type: String,
+    required: true,
+  },
 
-const userSchema = new Schema({
-    email: {
-        type: String,
-        required: true,
+  // ── Wishlist: array of Listing references ──────────────────
+  wishlist: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref:  "Listing",
     },
-    wishlist: [{ 
-        type: Schema.Types.ObjectId,
-        ref: 'Listing' 
-    }]
+  ],
+
 });
 
-userSchema.plugin(
-    passportLocalMongoose
-);
+// passport-local-mongoose must be called as a function — this adds
+// username, hash, salt fields + createStrategy / serializeUser etc.
+userSchema.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model(
-    "User",
-    userSchema
-);
+module.exports = mongoose.model("User", userSchema);

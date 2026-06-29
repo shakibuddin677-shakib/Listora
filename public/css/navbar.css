@@ -23,6 +23,24 @@
   }
   #mainNavbar .navbar-brand:hover { opacity: 0.85; }
 
+  /* ── Listora Premium Logo ── */
+  .listora-logo-icon {
+    color: var(--brand);
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+  #mainNavbar .navbar-brand:hover .listora-logo-icon {
+    transform: scale(1.08) rotate(-3deg);
+  }
+  .listora-wordmark {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: 1.35rem;
+    letter-spacing: -0.03em;
+    color: var(--brand);
+    line-height: 1;
+  }
+
   /* Nav links */
   #mainNavbar .nav-link {
     font-size: 0.925rem;

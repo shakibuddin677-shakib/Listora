@@ -3,23 +3,13 @@
   /**
    * Dark Mode Initialization Script
    * ─────────────────────────────────
-   * This runs BEFORE the page renders (it's in <head> or top of body),
-   * so there's NO flash of wrong theme on page load.
-   *
-   * How it works:
-   * 1. Check localStorage for a saved theme preference
-   * 2. Also check if user's OS prefers dark mode (prefers-color-scheme)
-   * 3. Apply the correct theme immediately by setting data-theme on <html>
+   * Runs BEFORE paint to avoid flash of wrong theme.
+   * Persists across ALL pages — listings, show, edit, new, login, signup, etc.
    */
   (function applyThemeImmediately() {
-    // Get saved preference from localStorage, fallback to OS preference
-    const savedTheme = localStorage.getItem('wandernest-theme');
-    const osDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    // Decide which theme to use
-    const theme = savedTheme || (osDark ? 'dark' : 'light');
-
-    // Apply to <html> element — CSS variables kick in immediately
+    var savedTheme = localStorage.getItem('listora-theme');
+    var osDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var theme = savedTheme || (osDark ? 'dark' : 'light');
     document.documentElement.setAttribute('data-theme', theme);
   })();
 </script>

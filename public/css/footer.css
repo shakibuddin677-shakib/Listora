@@ -30,6 +30,17 @@
   text-decoration: none;
   color: var(--brand);
   margin-bottom: 0.75rem;
+  transition: opacity 0.15s;
+}
+.footer-logo:hover { opacity: 0.8; }
+.footer-logo .listora-logo-icon { color: var(--brand); flex-shrink: 0; }
+.footer-logo .listora-wordmark {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 1.3rem;
+  letter-spacing: -0.03em;
+  color: var(--brand);
+  line-height: 1;
 }
 
 .footer-tagline {

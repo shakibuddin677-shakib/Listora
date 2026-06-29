@@ -84,36 +84,24 @@
   gap: 10px;
   margin-bottom: var(--sp-7);
   text-decoration: none;
-  /* FIX: prevent logo from wrapping or overflowing */
   flex-shrink: 0;
   width: fit-content;
 }
 
-.auth-logo-icon {
-  /* FIX: flex-shrink:0 stops icon from squishing */
+.auth-logo .listora-logo-icon {
   flex-shrink: 0;
-  width: 38px;
-  height: 38px;
-  background: var(--accent);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 18px;
-  /* FIX: line-height reset so icon vertically centres correctly */
-  line-height: 1;
+  color: var(--accent);
 }
 
 .auth-logo-name {
   font-family: 'Fraunces', serif;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 500;
-  color: var(--ink);
-  /* FIX: prevent long brand name overflowing on tiny screens */
+  color: var(--accent);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.03em;
 }
 
 /* ── Heading & subtext ── */

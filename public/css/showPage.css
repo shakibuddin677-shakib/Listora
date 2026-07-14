@@ -35,21 +35,23 @@
   .fade-up-3 { animation-delay: .20s; }
   .fade-up-4 { animation-delay: .28s; }
 
-  /* ── listing card ── */
-  .listing-card {
+  /* ── listing card (show page hero card only — renamed from .listing-card
+        to avoid clashing with the grid card class used on /listings & /wishlist,
+        which was forcing every grid card image to a fixed 340px height) ── */
+  .sp-listing-card {
     border-radius: var(--radius-lg);
     overflow: hidden;
     background: var(--white);
     border: 1px solid rgba(0,0,0,.06);
   }
-  .listing-card img {
+  .sp-listing-card img {
     height: 340px;
     object-fit: cover;
     width: 100%;
     display: block;
     transition: transform .5s ease;
   }
-  .listing-card:hover img { transform: scale(1.02); }
+  .sp-listing-card:hover img { transform: scale(1.02); }
 
   /* ── badge ── */
   .badge-pill {

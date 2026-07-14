@@ -131,7 +131,7 @@ app.get("/", (req, res) => {
     res.redirect("/listings");
 });
 
-// 👇 Isko yahan add karo
+//  Isko yahan add karo
 app.get("/test-cloudinary", (req, res) => {
     res.json({
         cloud_name: process.env.CLOUD_NAME,

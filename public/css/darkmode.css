@@ -139,7 +139,7 @@
   }
 
   /* Cards */
-  .card, .auth-card, .form-card, .listing-card {
+  .card, .auth-card, .form-card, .listing-card, .sp-listing-card {
     background-color: var(--bg-surface) !important;
     border-color: var(--border-subtle) !important;
     color: var(--text-body) !important;

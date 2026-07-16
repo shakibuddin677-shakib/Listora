@@ -132,8 +132,6 @@ Listora is a full-stack MERN-style web application (Express + MongoDB + EJS) bui
 
 </div>
 
-> 📝 Drop your screenshots into a `screenshots` folder at the project root using the filenames above — they'll render automatically.
-
 <br/>
 
 ## 📁 Project Structure

@@ -120,17 +120,11 @@ Listora is a full-stack MERN-style web application (Express + MongoDB + EJS) bui
 <table>
 <tr>
 <td align="center" width="33%"><b>Home / Browse</b></td>
-<td align="center" width="33%"><b>Listing Details</b></td>
 <td align="center" width="33%"><b>Dark Mode</b></td>
-<td align="center" width="33%"><b>Edit Form
-</b></td>
 </tr>
 <tr>
 <td><img src="screenshots\Screenshot 2026-07-16 101536.png" width="100%"/></td>
-<td><img src="screenshots\WhatsApp Image 2026-07-16 at 10.20.14.jpeg" width="100%"/></td>
 <td><img src="screenshots\Screenshot 2026-07-16 101627.png" width="100%"/></td>
-<td><img src="screenshots\WhatsApp Image 2026-07-16 at 10.20.141.jpeg" width="100%"/></td>
-</tr>
 </table>
 
 </div>

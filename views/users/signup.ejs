@@ -4,7 +4,7 @@
 <div class="auth-page">
   <div class="auth-card">
 
-    <!-- ── Logo ── -->
+    <!-- Logo -->
     <a href="/" class="auth-logo" aria-label="Listora — go to homepage">
       <svg class="listora-logo-icon" width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect x="4" y="13" width="15" height="15" rx="1.5" fill="currentColor" opacity="0.15"/>
@@ -28,7 +28,7 @@
 
     <form action="/signup" method="POST" id="signup-form" novalidate>
 
-      <!-- ── Username ── -->
+      <!-- Username -->
       <div class="auth-field">
         <label for="username">Username</label>
         <div class="auth-input-wrap">
@@ -50,7 +50,7 @@
         </p>
       </div>
 
-      <!-- ── Email ── -->
+      <!-- Email -->
       <div class="auth-field">
         <label for="email">Email</label>
         <div class="auth-input-wrap">
@@ -71,14 +71,7 @@
         </p>
       </div>
 
-      <!-- ── Password ──────────────────────────────────────────────────
-           DOM ORDER NOTE: The elements after .auth-input in this field are:
-             .pw-strength (bars)  →  .pw-strength-lbl  →  .auth-err
-           The CSS general sibling selector (.auth-input.is-invalid ~ .auth-err)
-           correctly matches .auth-err because ~ targets ANY later sibling, not
-           just the immediately adjacent one. We also add .auth-field--has-error
-           on the .auth-field wrapper from JS as an extra trigger.
-           ── -->
+      <!-- Password -->
       <div class="auth-field" id="password-field">
         <label for="password">Password</label>
         <div class="auth-input-wrap has-toggle">
@@ -105,25 +98,18 @@
           </button>
         </div>
 
-        <%# FIX: strength bars are always in the DOM; CSS hides them at zero height
-            until the user starts typing — this prevents layout shift %>
         <div class="pw-strength" id="pw-strength" aria-hidden="true">
           <div class="pw-bar" id="bar1"></div>
           <div class="pw-bar" id="bar2"></div>
           <div class="pw-bar" id="bar3"></div>
         </div>
-        <%# FIX: min-height set in CSS so this never causes layout shift %>
         <p class="pw-strength-lbl" id="pw-lbl" aria-live="polite"></p>
 
-        <%# FIX: .auth-err is still a general sibling of .auth-input so
-            CSS ~ selector reaches it; JS also sets .auth-field--has-error
-            on #password-field as a belt-and-braces trigger %>
         <p class="auth-err" id="password-err" role="alert">
           Password must be at least 6 characters.
         </p>
       </div>
 
-      <%# FIX: inline style removed from icon; .auth-submit i rule in CSS handles it %>
       <button type="submit" class="auth-submit">
         <i class="ti ti-user-plus" aria-hidden="true"></i>
         Create account
@@ -148,7 +134,7 @@
 </div><!-- /.auth-page -->
 
 <script>
-  // ── Password show / hide toggle ──────────────────────────────────
+  // password show / hide toggle
   (function () {
     const btn  = document.getElementById('pw-tog');
     const inp  = document.getElementById('password');
@@ -164,9 +150,7 @@
     });
   }());
 
-  // ── Password strength meter ──────────────────────────────────────
-  // FIX: strength label colour now set via CSS classes (lbl-weak / lbl-medium /
-  //      lbl-strong) instead of inline style, enabling CSS transitions.
+  // password strength meter
   (function () {
     const input = document.getElementById('password');
     const bars  = [
@@ -208,7 +192,6 @@
         bars[i].classList.add(level.bar);
       }
 
-      // FIX: set CSS class instead of inline style
       lbl.textContent = level.label;
       lbl.classList.add(level.cls);
     });

@@ -24,7 +24,7 @@
 
   .sp { font-family: 'DM Sans', sans-serif; color: var(--ink); }
 
-  /* ── fade-in entrance ── */
+  /* fade-in entrance */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -35,9 +35,7 @@
   .fade-up-3 { animation-delay: .20s; }
   .fade-up-4 { animation-delay: .28s; }
 
-  /* ── listing card (show page hero card only — renamed from .listing-card
-        to avoid clashing with the grid card class used on /listings & /wishlist,
-        which was forcing every grid card image to a fixed 340px height) ── */
+  /* show page hero card - separate class so it doesn't clash with the grid card styles */
   .sp-listing-card {
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -53,7 +51,7 @@
   }
   .sp-listing-card:hover img { transform: scale(1.02); }
 
-  /* ── badge ── */
+  /* badge */
   .badge-pill {
     display: inline-flex;
     align-items: center;
@@ -67,7 +65,7 @@
   .badge-verified { background: var(--green-bg); color: var(--green-txt); }
   .badge-count    { background: var(--ink);       color: var(--white); }
 
-  /* ── owner buttons ── */
+  /* owner buttons */
   .btn-edit {
     display: inline-flex;
     align-items: center;
@@ -104,14 +102,14 @@
   .btn-del-owner:hover  { background: var(--red-bg); }
   .btn-del-owner:active { transform: scale(.97); }
 
-  /* ── review surface ── */
+  /* review surface */
   .review-surface {
     background: var(--surface-2);
     border-radius: var(--radius-lg);
     padding: 2rem;
   }
 
-  /* ── section heading ── */
+  /* section heading */
   .section-eyebrow {
     font-size: 11px;
     font-weight: 600;
@@ -128,7 +126,7 @@
     margin: 0;
   }
 
-  /* ── form card ── */
+  /* form card */
   .form-card {
     background: var(--white);
     border: 1px solid rgba(0,0,0,.07);
@@ -136,7 +134,7 @@
     padding: 1.75rem;
   }
 
-  /* ── field label ── */
+  /* field label */
   .field-label {
     font-size: 11px;
     font-weight: 600;
@@ -146,7 +144,7 @@
     margin: 0 0 8px;
   }
 
-  /* ── textarea ── */
+  /* textarea */
   .sp-textarea {
     width: 100%;
     border-radius: var(--radius-sm);
@@ -164,7 +162,7 @@
   .sp-textarea:focus { border-color: var(--ink-3); background: var(--white); }
   .sp-textarea::placeholder { color: var(--ink-4); }
 
-  /* ── char counter ── */
+  /* char counter */
   .char-counter {
     font-size: 12px;
     color: var(--ink-4);
@@ -175,7 +173,7 @@
   .char-counter.warn { color: var(--amber-txt); }
   .char-counter.over { color: var(--red-txt); font-weight: 600; }
 
-  /* ── star picker ── */
+  /* star picker */
   .star-icon {
     font-size: 28px;
     cursor: pointer;
@@ -192,7 +190,7 @@
   }
   .star-icon.popped { animation: starPop .3s ease forwards; }
 
-  /* ── rating label chip ── */
+  /* rating label chip */
   .rating-chip {
     font-size: 12px;
     font-weight: 600;
@@ -207,7 +205,7 @@
   .rating-chip.v4 { background: var(--green-bg);  color: var(--green-txt); }
   .rating-chip.v5 { background: var(--green-bg);  color: var(--green-txt); }
 
-  /* ── submit ── */
+  /* submit */
   .btn-submit {
     display: inline-flex;
     align-items: center;
@@ -226,7 +224,7 @@
   .btn-submit:hover  { background: #333; }
   .btn-submit:active { transform: scale(.97); }
 
-  /* ── rating breakdown ── */
+  /* rating breakdown */
   .breakdown-row {
     display: flex;
     align-items: center;
@@ -248,7 +246,7 @@
     transition: width .8s ease;
   }
 
-  /* ── sort controls ── */
+  /* sort controls */
   .sort-btn {
     background: none;
     border: 1px solid rgba(0,0,0,.1);
@@ -264,7 +262,7 @@
   .sort-btn:hover   { background: var(--surface); }
   .sort-btn.active  { background: var(--ink); color: var(--white); border-color: var(--ink); }
 
-  /* ── review card ── */
+  /* review card */
   .review-card {
     background: var(--white);
     border: 1px solid rgba(0,0,0,.07);
@@ -277,7 +275,7 @@
     transform: translateY(-2px);
   }
 
-  /* ── avatar ── */
+  /* avatar */
   .avatar {
     width: 38px;
     height: 38px;
@@ -296,7 +294,7 @@
   .av-d { background: #FAEEDA; color: #854F0B; }
   .av-e { background: #FBEAF0; color: #993556; }
 
-  /* ── rating pill in card ── */
+  /* rating pill in card */
   .rv-pill {
     display: inline-flex;
     align-items: center;
@@ -310,10 +308,10 @@
     white-space: nowrap;
   }
 
-  /* ── inline star display ── */
+  /* inline star display */
   .inline-stars { color: var(--amber); font-size: 13px; letter-spacing: 1px; }
 
-  /* ── helpful button ── */
+  /* helpful button */
   .btn-helpful {
     display: inline-flex;
     align-items: center;
@@ -331,7 +329,7 @@
   .btn-helpful:hover           { border-color: var(--green); color: var(--green-txt); background: var(--green-bg); }
   .btn-helpful.voted           { border-color: var(--green); color: var(--green-txt); background: var(--green-bg); font-weight: 600; }
 
-  /* ── delete btn ── */
+  /* delete btn */
   .btn-rv-del {
     background: none;
     border: 1px solid var(--red-bd);
@@ -346,7 +344,7 @@
   }
   .btn-rv-del:hover { background: var(--red-bg); }
 
-  /* ── empty state ── */
+  /* empty state */
   .empty-state {
     text-align: center;
     padding: 3rem 1rem;
@@ -355,18 +353,18 @@
     border-radius: var(--radius-md);
   }
 
-  /* ── divider ── */
+  /* divider */
   .sp-divider {
     border: none;
     border-top: 1px solid rgba(0,0,0,.07);
     margin: 1.5rem 0;
   }
 
-  /* ── scroll-reveal ── */
+  /* scroll-reveal */
   .reveal { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
   .reveal.visible { opacity: 1; transform: none; }
 
-  /* ── avg score display ── */
+  /* avg score display */
   .avg-score {
     font-family: 'Fraunces', serif;
     font-size: 48px;

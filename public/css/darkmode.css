@@ -1,134 +1,128 @@
  :root {
-    /* ── Backgrounds ── */
+    /* Backgrounds */
     --bg-page:        #f8f9fa;
     --bg-surface:     #ffffff;
     --bg-surface-alt: #f3f4f6;
     --bg-hover:       #f9fafb;
 
-    /* ── Text ── */
+    /* Text */
     --text-heading:   #111827;
     --text-body:      #374151;
     --text-muted:     #6b7280;
     --text-placeholder: #c0c4cc;
 
-    /* ── Borders ── */
+    /* Borders */
     --border-color:   #e5e7eb;
     --border-subtle:  #f0f0f0;
 
-    /* ── Brand ── */
+    /* Brand */
     --brand:          #e85d3a;
     --brand-hover:    #cf4e2e;
     --brand-light:    #fff4f2;
     --brand-light-hover: #fde8e4;
 
-    /* ── Navy (login button, footer bg) ── */
+    /* Navy (login button, footer bg) */
     --navy:           #1a1a2e;
     --navy-hover:     #2d2d4e;
 
-    /* ── Cards ── */
+    /* Cards */
     --card-shadow:    0 2px 8px rgba(0,0,0,0.06);
     --card-shadow-hover: 0 12px 32px rgba(0,0,0,0.12);
 
-    /* ── Navbar ── */
+    /* Navbar */
     --nav-bg:         #ffffff;
     --nav-border:     #f0f0f0;
 
-    /* ── Footer ── */
+    /* Footer */
     --footer-bg:      #1a1a2e;
     --footer-text:    #9ca3af;
 
-    /* ── Input ── */
+    /* Input */
     --input-bg:       #ffffff;
     --input-border:   #e5e7eb;
     --input-focus-ring: rgba(232, 93, 58, 0.12);
 
-    /* ── Search Bar ── */
+    /* Search Bar */
     --search-bg:      #ffffff;
     --search-border:  #e5e7eb;
     --search-shadow:  0 4px 24px rgba(0,0,0,0.10);
 
-    /* ── Filter Chips ── */
+    /* Filter Chips */
     --chip-bg:        #f3f4f6;
     --chip-color:     #374151;
     --chip-active-bg: #1a1a2e;
     --chip-active-color: #ffffff;
 
-    /* ── Toggle button ── */
+    /* Toggle button */
     --toggle-bg:      #f3f4f6;
     --toggle-icon:    #374151;
 
-    /* ── Transition speed for theme switch ── */
+    /* Transition speed for theme switch */
     --theme-transition: 0.25s ease;
   }
 
-  /* ==================================================
-     DARK MODE — activated by adding data-theme="dark"
-     to the <html> tag via JavaScript
-  ================================================== */
+  /* dark mode - activated by adding data-theme="dark" on <html> via JS */
   [data-theme="dark"] {
-    /* ── Backgrounds ── */
+    /* Backgrounds */
     --bg-page:        #0f0f14;
     --bg-surface:     #1a1a24;
     --bg-surface-alt: #22222e;
     --bg-hover:       #2a2a38;
 
-    /* ── Text ── */
+    /* Text */
     --text-heading:   #f9fafb;
     --text-body:      #d1d5db;
     --text-muted:     #9ca3af;
     --text-placeholder: #4b5563;
 
-    /* ── Borders ── */
+    /* Borders */
     --border-color:   #2d2d3d;
     --border-subtle:  #22222e;
 
-    /* ── Brand stays the same — recognition ── */
+    /* Brand stays the same — recognition */
     --brand:          #e85d3a;
     --brand-hover:    #ff6f48;
     --brand-light:    #2a1a16;
     --brand-light-hover: #3a201a;
 
-    /* ── Navy ── */
+    /* Navy */
     --navy:           #e85d3a;   /* in dark mode, CTA becomes brand orange */
     --navy-hover:     #cf4e2e;
 
-    /* ── Cards ── */
+    /* Cards */
     --card-shadow:    0 2px 8px rgba(0,0,0,0.3);
     --card-shadow-hover: 0 12px 32px rgba(0,0,0,0.5);
 
-    /* ── Navbar ── */
+    /* Navbar */
     --nav-bg:         #1a1a24;
     --nav-border:     #2d2d3d;
 
-    /* ── Footer ── */
+    /* Footer */
     --footer-bg:      #0f0f14;
     --footer-text:    #6b7280;
 
-    /* ── Input ── */
+    /* Input */
     --input-bg:       #22222e;
     --input-border:   #2d2d3d;
     --input-focus-ring: rgba(232, 93, 58, 0.2);
 
-    /* ── Search Bar ── */
+    /* Search Bar */
     --search-bg:      #1a1a24;
     --search-border:  #2d2d3d;
     --search-shadow:  0 4px 24px rgba(0,0,0,0.4);
 
-    /* ── Filter Chips ── */
+    /* Filter Chips */
     --chip-bg:        #22222e;
     --chip-color:     #d1d5db;
     --chip-active-bg: #e85d3a;
     --chip-active-color: #ffffff;
 
-    /* ── Toggle button ── */
+    /* Toggle button */
     --toggle-bg:      #22222e;
     --toggle-icon:    #f9d71c;   /* golden sun in dark mode */
   }
 
-  /* ==================================================
-     GLOBAL — apply theme variables to base elements
-     This makes Bootstrap components respect the theme
-  ================================================== */
+  /* apply theme variables to base elements so Bootstrap components respect the theme */
   body {
     background-color: var(--bg-page) !important;
     color: var(--text-body) !important;

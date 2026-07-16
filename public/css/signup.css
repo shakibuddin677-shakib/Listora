@@ -1,17 +1,4 @@
-/* ============================================================
-   signup.css — Fixed & Production-Ready
-   Fixes (all from login.css, plus signup-specific):
-   1. CRITICAL: .auth-err sibling selector broken by pw-strength bars
-      sitting between .auth-input and .auth-err — restructured selector
-      order and added .auth-field--has-error utility class approach
-   2. Password strength bars use reserved layout space (no reflow)
-   3. pw-strength-lbl color driven by CSS classes, not inline JS
-   4. Terms note responsive wrapping
-   5. All login.css fixes carried over (min-width:0, overflow guards,
-      responsive breakpoints, focus-visible rings, flex gap on button)
-   ============================================================ */
-
-/* ── Design tokens ── */
+/* Design tokens */
 :root {
   --ink:       #1a1814;
   --ink-2:     #4a4640;
@@ -43,10 +30,10 @@
   --shadow-focus: 0 0 0 3px rgba(26,24,20,.07);
 }
 
-/* ── Reset ── */
+/* Reset */
 *, *::before, *::after { box-sizing: border-box; }
 
-/* ── Page shell ── */
+/* Page shell */
 .auth-page {
   font-family: 'DM Sans', sans-serif;
   min-height: calc(100dvh - 64px);
@@ -58,7 +45,7 @@
   padding: var(--sp-8) var(--sp-4);
 }
 
-/* ── Card ── */
+/* Card */
 .auth-card {
   background: var(--white);
   border: 1px solid rgba(0,0,0,.07);
@@ -71,7 +58,7 @@
   min-width: 0;
 }
 
-/* ── Logo ── */
+/* Logo */
 .auth-logo {
   display: flex;
   align-items: center;
@@ -98,7 +85,7 @@
   letter-spacing: -0.03em;
 }
 
-/* ── Heading & subtext ── */
+/* Heading & subtext */
 .auth-heading {
   font-family: 'Fraunces', serif;
   font-size: clamp(22px, 5vw, 30px);
@@ -117,7 +104,7 @@
   word-break: break-word;
 }
 
-/* ── Field group ── */
+/* Field group */
 .auth-field {
   margin-bottom: 20px;
 }
@@ -135,7 +122,7 @@
   white-space: nowrap;
 }
 
-/* ── Input wrapper ── */
+/* Input wrapper */
 .auth-input-wrap {
   position: relative;
   min-width: 0;
@@ -153,7 +140,7 @@
   line-height: 1;
 }
 
-/* ── Input ── */
+/* Input */
 .auth-input {
   display: block;
   width: 100%;
@@ -193,20 +180,14 @@
   border-color: var(--valid);
 }
 
-/* ── Error message ──────────────────────────────────────────────────
-   CRITICAL FIX: In the password field the DOM order is:
-     .auth-input  →  .pw-strength  →  .pw-strength-lbl  →  .auth-err
-   The CSS general sibling selector (.auth-input.is-invalid ~ .auth-err)
-   still works because ~ matches ANY later sibling, not just the immediate
-   next one. However we also add the .auth-field--has-error class approach
-   below as a belt-and-braces fix for cases where JS controls visibility.
-   ─────────────────────────────────────────────────────────────────── */
+/* error text sits after the strength bars in DOM order, but the ~ sibling
+   selector still reaches it since it matches any later sibling */
 .auth-err {
   font-size: 12px;
   color: var(--error);
   margin: 5px 0 0;
   line-height: 1.4;
-  /* FIX: reserve a fixed height to prevent layout shift when error appears */
+  /* reserve a fixed height to prevent layout shift when error appears */
   min-height: 17px;
   display: none;
 }
@@ -216,13 +197,13 @@
   display: block;
 }
 
-/* FIX: JS can also toggle this class on .auth-field for the password
+/* JS can also toggle this class on .auth-field for the password
    field where strength bars sit between input and error paragraph */
 .auth-field--has-error .auth-err {
   display: block;
 }
 
-/* ── Password toggle ── */
+/* Password toggle */
 .pw-toggle {
   position: absolute;
   right: 12px;
@@ -259,16 +240,13 @@
   padding-right: 48px;
 }
 
-/* ── Password strength bars ──────────────────────────────────────────
-   FIX: bars are always rendered in the DOM (height reserved) so they
-   don't push content around when they become active. The wrapper has a
-   fixed height; bars animate opacity + background colour.
-   ─────────────────────────────────────────────────────────────────── */
+/* strength bars stay in the DOM with a fixed height so they don't
+   push content around when they activate */
 .pw-strength {
   display: flex;
   gap: 4px;
   margin-top: 8px;
-  /* FIX: fixed height prevents reflow when bars activate */
+  /* fixed height prevents reflow when bars activate */
   height: 4px;
 }
 
@@ -285,14 +263,11 @@
 .pw-bar.medium { background: #EF9F27; }
 .pw-bar.strong { background: var(--valid); }
 
-/* ── Strength label ──────────────────────────────────────────────────
-   FIX: colour is driven by CSS classes (not inline JS style) so it
-   participates in transitions and is easier to override.
-   ─────────────────────────────────────────────────────────────────── */
+/* colour driven by CSS classes so it can transition */
 .pw-strength-lbl {
   font-size: 11px;
   color: var(--ink-4);
-  /* FIX: fixed min-height prevents reflow when label text changes */
+  /* fixed min-height prevents reflow when label text changes */
   min-height: 16px;
   margin: 4px 0 0;
   transition: color .3s;
@@ -304,7 +279,7 @@
 .pw-strength-lbl.lbl-medium { color: var(--warn);   }
 .pw-strength-lbl.lbl-strong { color: var(--valid);  }
 
-/* ── Submit button ── */
+/* Submit button */
 .auth-submit {
   display: flex;
   align-items: center;
@@ -342,7 +317,7 @@
   outline-offset: 3px;
 }
 
-/* ── Divider ── */
+/* Divider */
 .auth-divider {
   display: flex;
   align-items: center;
@@ -365,7 +340,7 @@
   flex-shrink: 0;
 }
 
-/* ── Footer ── */
+/* Footer */
 .auth-footer {
   text-align: center;
   font-size: 14px;
@@ -388,15 +363,15 @@
   border-radius: 2px;
 }
 
-/* ── Terms note ── */
+/* Terms note */
 .auth-terms {
   font-size: 12px;
   color: var(--ink-4);
   text-align: center;
-  /* FIX: moved margin-top here; was 16px which stacked oddly on mobile */
+  /* moved margin-top here; was 16px which stacked oddly on mobile */
   margin: var(--sp-4) 0 0;
   line-height: 1.6;
-  /* FIX: allow natural wrapping on narrow screens */
+  /* allow natural wrapping on narrow screens */
   word-break: break-word;
 }
 
@@ -409,7 +384,7 @@
   color: var(--ink-2);
 }
 
-/* ── Responsive: small mobile (<380px) ── */
+/* Responsive: small mobile (<380px) */
 @media (max-width: 380px) {
   .auth-page {
     padding: var(--sp-4) var(--sp-3);
@@ -425,14 +400,14 @@
     font-size: 22px;
   }
 
-  /* FIX: stack submit button text safely on tiny screens */
+  /* stack submit button text safely on tiny screens */
   .auth-submit {
     font-size: 14px;
     padding: 12px 16px;
   }
 }
 
-/* ── Responsive: tablet & up (≥640px) ── */
+/* Responsive: tablet & up (≥640px) */
 @media (min-width: 640px) {
   .auth-page {
     padding: 48px var(--sp-8);

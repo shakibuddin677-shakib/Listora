@@ -23,7 +23,7 @@
   }
   #mainNavbar .navbar-brand:hover { opacity: 0.85; }
 
-  /* ── Listora Premium Logo ── */
+  /* Listora Premium Logo */
   .listora-logo-icon {
     color: var(--brand);
     flex-shrink: 0;
@@ -96,9 +96,7 @@
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%236b7280' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
   }
 
-  /* ──────────────────────────────────────────
-     DARK MODE TOGGLE BUTTON
-  ────────────────────────────────────────── */
+  /* DARK MODE TOGGLE BUTTON */
   .dark-toggle {
     width: 38px;
     height: 38px;
@@ -122,9 +120,7 @@
     transform: rotate(20deg) scale(1.08);
   }
 
-  /* ──────────────────────────────────────────
-     WISHLIST ICON BUTTON (nav)
-  ────────────────────────────────────────── */
+  /* WISHLIST ICON BUTTON (nav) */
   .nav-icon-btn {
     width: 38px;
     height: 38px;
@@ -145,9 +141,7 @@
     background-color: var(--brand-light);
   }
 
-  /* ──────────────────────────────────────────
-     USER AVATAR BUTTON + DROPDOWN
-  ────────────────────────────────────────── */
+  /* USER AVATAR BUTTON + DROPDOWN */
   .nav-avatar-btn {
     display: flex;
     align-items: center;
@@ -253,16 +247,14 @@
     margin: 0.25rem 0;
   }
 
-  /* ──────────────────────────────────────────
-     SEARCH SECTION
-  ────────────────────────────────────────── */
+  /* SEARCH SECTION */
   #searchSection {
     background-color: var(--bg-page);
     padding: 1.25rem 0 0;
     transition: background-color var(--theme-transition);
   }
 
-  /* ── The search pill bar (Airbnb-style) ── */
+  /* The search pill bar (Airbnb-style) */
   .search-bar {
     display: flex;
     align-items: center;
@@ -356,7 +348,7 @@
     transform: scale(1.05);
   }
 
-  /* ── Category Filter Chips ── */
+  /* Category Filter Chips */
   .category-chips {
     display: flex;
     gap: 0.5rem;
@@ -407,7 +399,7 @@
     border-color: #fca5a5;
   }
 
-  /* ── Mobile: collapse search to icon bar ── */
+  /* Mobile: collapse search to icon bar */
   @media (max-width: 767px) {
     .search-bar {
       border-radius: 16px;
@@ -439,9 +431,7 @@
     }
   }
   
-/* ==============================
-   SEARCH BAR RESPONSIVE FIX
-============================== */
+/* SEARCH BAR RESPONSIVE FIX */
 
 /* Desktop */
 .search-bar-form {

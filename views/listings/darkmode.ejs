@@ -1,11 +1,6 @@
 
 <script>
-  /**
-   * Dark Mode Initialization Script
-   * ─────────────────────────────────
-   * Runs BEFORE paint to avoid flash of wrong theme.
-   * Persists across ALL pages — listings, show, edit, new, login, signup, etc.
-   */
+  // runs before paint so there's no flash of the wrong theme
   (function applyThemeImmediately() {
     var savedTheme = localStorage.getItem('listora-theme');
     var osDark = window.matchMedia('(prefers-color-scheme: dark)').matches;

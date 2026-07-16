@@ -61,7 +61,7 @@
       <% } %>
     </div>
 
-    <!-- ── Listings Grid ── -->
+    <!-- Listings Grid -->
     <% if (allListings.length > 0) { %>
 
       <div class="listings-grid">
@@ -87,11 +87,7 @@
 
           <div class="listing-card-wrapper">
 
-            <!--
-              HEART / WISHLIST BUTTON
-              FIX: auth state is passed from EJS so guests are redirected to login.
-              For logged-in users, the state is seeded from their actual wishlist array.
-            -->
+            <!-- heart / wishlist button -->
             <%
               const isLoggedIn = !!currUser;
               // Check if this listing is already in the user's wishlist
@@ -146,7 +142,7 @@
                   <%= listing.location %>, <%= listing.country %>
                 </p>
 
-                <!-- FIX: Real average rating; shows "New" when no reviews exist -->
+                <!-- shows "New" when there are no reviews yet -->
                 <div class="listing-card-rating">
                   <% if (avgRating) { %>
                     <i class="fa-solid fa-star"></i>
@@ -256,10 +252,7 @@
     });
   }
 
-  /*
-   * showToast — reusable toast notification
-   * FIX: @keyframes is no longer injected on every call; it lives in index.css
-   */
+  // reusable toast notification
   function showToast(iconClass, iconColor, message) {
     const existing = document.getElementById('likeToast');
     if (existing) existing.remove();

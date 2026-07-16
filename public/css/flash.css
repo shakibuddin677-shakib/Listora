@@ -1,6 +1,5 @@
 
- /* ── Flash Container ──
-     Centered, fixed near the top so it always stays visible */
+ /* Flash container - fixed near the top so it always stays visible */
   .flash-wrapper {
     display: flex;
     justify-content: center;
@@ -8,7 +7,7 @@
     animation: flashSlideDown 0.3s ease;  /* smooth entrance */
   }
 
-  /* ── Base Flash Styles ── */
+  /* Base Flash Styles */
   .flash {
     display: flex;
     align-items: center;
@@ -23,7 +22,7 @@
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   }
 
-  /* ── Success Variant (green) ── */
+  /* Success Variant (green) */
   .flash-success {
     background-color: #f0fdf4;
     border: 1px solid #bbf7d0;
@@ -33,7 +32,7 @@
     color: #16a34a;
   }
 
-  /* ── Error Variant (red) ── */
+  /* Error Variant (red) */
   .flash-error {
     background-color: #fef2f2;
     border: 1px solid #fecaca;
@@ -43,18 +42,18 @@
     color: #dc2626;
   }
 
-  /* ── Icon ── */
+  /* Icon */
   .flash-icon {
     font-size: 1rem;
     flex-shrink: 0;   /* prevents icon from shrinking */
   }
 
-  /* ── Message Text ── */
+  /* Message Text */
   .flash-message {
     flex: 1;          /* takes up all remaining space */
   }
 
-  /* ── Close Button ── */
+  /* Close Button */
   .flash-close {
     background: none;
     border: none;
@@ -70,7 +69,7 @@
     opacity: 1;
   }
 
-  /* ── Entrance Animation ── */
+  /* Entrance Animation */
   @keyframes flashSlideDown {
     from {
       opacity: 0;
@@ -82,7 +81,7 @@
     }
   }
 
-  /* ── Fade-out when dismissed ── */
+  /* Fade-out when dismissed */
   .flash-wrapper.hiding {
     animation: flashFadeOut 0.3s ease forwards;
   }

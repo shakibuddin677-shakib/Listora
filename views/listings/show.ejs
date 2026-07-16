@@ -5,7 +5,7 @@
 
 <div class="container mt-4 mb-5 pb-5 sp">
 
-  <%- /* ═══ TITLE ═══════════════════════════════════════════════ */ %>
+  <%- /* TITLE */ %>
   <div class="row mb-3 fade-up fade-up-1">
     <div class="col-md-6 offset-md-3">
       <p class="section-eyebrow">Listing</p>
@@ -24,7 +24,7 @@
     </div>
   </div>
 
-  <%- /* ═══ LISTING CARD ════════════════════════════════════════ */ %>
+  <%- /* LISTING CARD */ %>
   <div class="row mb-3 fade-up fade-up-2">
     <div class="col-md-6 offset-md-3">
       <div class="sp-listing-card">
@@ -60,7 +60,7 @@
     </div>
   </div>
 
-  <%- /* ═══ OWNER BUTTONS ═════════════════════════════════════ */ %>
+  <%- /* OWNER BUTTONS */ %>
   <% if(currUser && listing.owner._id.equals(currUser._id)) { %>
   <div class="row mb-4 fade-up fade-up-3">
     <div class="col-md-6 offset-md-3 d-flex justify-content-between align-items-center">
@@ -78,12 +78,12 @@
   </div>
   <% } %>
 
-  <%- /* ═══ REVIEW SECTION ════════════════════════════════════ */ %>
+  <%- /* REVIEW SECTION */ %>
   <div class="row fade-up fade-up-4">
     <div class="col-md-6 offset-md-3">
       <div class="review-surface">
 
-        <%- /* ── Leave a Review Form ── */ %>
+        <%- /* Leave a Review Form */ %>
         <% if(currUser) { %>
         <div class="form-card mb-4 reveal">
 
@@ -137,7 +137,7 @@
         </div>
         <% } %>
 
-        <%- /* ── Rating Summary + Sort ── */ %>
+        <%- /* Rating Summary + Sort */ %>
         <% if(listing.reviews.length > 0) { %>
         <div class="reveal" style="margin-bottom:1.25rem;">
 
@@ -179,7 +179,7 @@
         <hr class="sp-divider">
         <% } %>
 
-        <%- /* ── All Reviews Header ── */ %>
+        <%- /* All Reviews Header */ %>
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
           <div>
             <p class="section-eyebrow">Community feedback</p>
@@ -188,7 +188,7 @@
           <span class="badge-pill badge-count"><%= listing.reviews.length %></span>
         </div>
 
-        <%- /* ── Empty State ── */ %>
+        <%- /* Empty State */ %>
         <% if(listing.reviews.length === 0) { %>
         <div class="empty-state reveal">
           <i class="ti ti-message-circle" style="font-size:36px; color:var(--ink-4); display:block; margin-bottom:12px;" aria-hidden="true"></i>
@@ -198,7 +198,7 @@
 
         <% } else { %>
 
-        <%- /* ── Review Cards ── */ %>
+        <%- /* Review Cards */ %>
         <div id="reviews-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:10px;">
 
           <% for(let i = 0; i < listing.reviews.length; i++) {
@@ -273,7 +273,7 @@
 <script>
 (function() {
 
-  /* ── Star Picker ─────────────────────────────── */
+  /* Star Picker */
   const stars   = document.querySelectorAll('#star-picker .star-icon');
   const chip    = document.getElementById('rating-chip');
   const inp     = document.getElementById('rating-val');
@@ -322,7 +322,7 @@
     });
   });
 
-  /* ── Char Counter ────────────────────────────── */
+  /* Char Counter */
   const ta  = document.getElementById('rv-comment');
   const cnt = document.getElementById('char-cnt');
   if (ta && cnt) {
@@ -333,7 +333,7 @@
     });
   }
 
-  /* ── Helpful Toggle ──────────────────────────── */
+  /* Helpful Toggle */
   window.toggleHelpful = function(btn) {
     const voted = btn.classList.toggle('voted');
     const countEl = btn.querySelector('.helpful-count');
@@ -342,7 +342,7 @@
     btn.querySelector('.helpful-label').textContent = voted ? 'Helpful!' : 'Helpful';
   };
 
-  /* ── Rating Breakdown ────────────────────────── */
+  /* Rating Breakdown */
   const cards = document.querySelectorAll('#reviews-grid .review-card');
   if (cards.length > 0) {
     const counts = { 1:0, 2:0, 3:0, 4:0, 5:0 };
@@ -372,7 +372,7 @@
     });
   }
 
-  /* ── Sort Controls ───────────────────────────── */
+  /* Sort Controls */
   document.querySelectorAll('.sort-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
@@ -390,7 +390,7 @@
     });
   });
 
-  /* ── Scroll Reveal ───────────────────────────── */
+  /* Scroll Reveal */
   const revealEls = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });

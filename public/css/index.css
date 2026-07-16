@@ -6,9 +6,7 @@
     transition: background-color var(--theme-transition);
   }
 
-  /* ──────────────────────────────────────────
-     FILTER FEEDBACK BAR
-  ────────────────────────────────────────── */
+  /* FILTER FEEDBACK BAR */
   .filter-feedback-bar {
     display: flex;
     align-items: center;
@@ -42,9 +40,7 @@
   }
   .filter-clear-link:hover { text-decoration: underline; }
 
-  /* ──────────────────────────────────────────
-     PAGE HEADER
-  ────────────────────────────────────────── */
+  /* PAGE HEADER */
   .listings-header {
     display: flex;
     justify-content: space-between;
@@ -84,25 +80,19 @@
     transform: translateY(-1px);
   }
 
-  /* ──────────────────────────────────────────
-     GRID
-  ────────────────────────────────────────── */
+  /* GRID */
   .listings-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
   }
 
-  /* ──────────────────────────────────────────
-     CARD WRAPPER
-  ────────────────────────────────────────── */
+  /* CARD WRAPPER */
   .listing-card-wrapper {
     position: relative;
   }
 
-  /* ──────────────────────────────────────────
-     HEART / LIKE BUTTON
-  ────────────────────────────────────────── */
+  /* HEART / LIKE BUTTON */
   .like-btn {
     position: absolute;
     top: 10px;
@@ -136,9 +126,7 @@
     font-family: 'Font Awesome 6 Free';
   }
 
-  /* ──────────────────────────────────────────
-     LISTING CARD
-  ────────────────────────────────────────── */
+  /* LISTING CARD */
   .listing-card {
     text-decoration: none;
     color: inherit;
@@ -158,7 +146,7 @@
     box-shadow: var(--card-shadow-hover);
   }
 
-  /* FIX: aspect-ratio replaces fixed 200px height so portraits aren't brutally cropped */
+  /* aspect-ratio replaces fixed 200px height so portraits aren't brutally cropped */
   .listing-card-image-wrapper {
     position: relative;
     overflow: hidden;
@@ -252,7 +240,7 @@
     color: var(--text-muted);
     font-size: 0.78rem;
   }
-  /* FIX: "New" badge for listings with no reviews yet */
+  /* "New" badge for listings with no reviews yet */
   .rating-new {
     font-size: 0.78rem;
     font-weight: 500;
@@ -263,11 +251,7 @@
   }
   .rating-new .fa-star { color: var(--text-placeholder); font-size: 0.72rem; }
 
-  /* ──────────────────────────────────────────
-     SKELETON LOADER
-     Shows a shimmer grid while listings load
-     on slow connections (e.g. Render cold start)
-  ────────────────────────────────────────── */
+  /* skeleton loader - shimmer grid while listings load */
   .skeleton-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -317,11 +301,7 @@
     100% { background-position: -100% 0; }
   }
 
-  /* ──────────────────────────────────────────
-     TOAST NOTIFICATION
-     FIX: moved @keyframes out of inline JS
-     and into CSS where it belongs
-  ────────────────────────────────────────── */
+  /* toast notification */
   .listing-toast {
     position: fixed;
     bottom: 24px;
@@ -352,9 +332,7 @@
     to   { opacity: 1; transform: translateX(-50%) translateY(0); }
   }
 
-  /* ──────────────────────────────────────────
-     PAGINATION
-  ────────────────────────────────────────── */
+  /* PAGINATION */
   .listings-pagination {
     display: flex;
     justify-content: center;
@@ -387,9 +365,7 @@
     border-color: var(--brand);
   }
 
-  /* ──────────────────────────────────────────
-     EMPTY STATE
-  ────────────────────────────────────────── */
+  /* EMPTY STATE */
   .listings-empty {
     text-align: center;
     padding: 5rem 1rem;
@@ -419,9 +395,7 @@
   .text-brand { color: var(--brand); text-decoration: none; font-weight: 600; }
   .text-brand:hover { text-decoration: underline; }
 
-  /* ──────────────────────────────────────────
-     RESPONSIVE
-  ────────────────────────────────────────── */
+  /* RESPONSIVE */
   @media (max-width: 1200px) {
     .listings-grid    { grid-template-columns: repeat(3, 1fr); }
     .skeleton-grid    { grid-template-columns: repeat(3, 1fr); }

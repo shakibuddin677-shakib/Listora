@@ -3,7 +3,7 @@
 <div class="auth-page">
   <div class="auth-card">
 
-    <!-- ── Logo ── -->
+    <!-- Logo -->
     <a href="/" class="auth-logo" aria-label="Listora — go to homepage">
       <svg class="listora-logo-icon" width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect x="4" y="13" width="15" height="15" rx="1.5" fill="currentColor" opacity="0.15"/>
@@ -27,11 +27,10 @@
 
     <form action="/login" method="POST" id="login-form" novalidate>
 
-      <!-- ── Username ── -->
+      <!-- Username -->
       <div class="auth-field">
         <label for="username">Username</label>
         <div class="auth-input-wrap">
-          <%# FIX: aria-hidden on decorative icons so screen readers skip them %>
           <i class="ti ti-user icon" aria-hidden="true"></i>
           <input
             type="text"
@@ -40,22 +39,18 @@
             class="auth-input"
             placeholder="your_username"
             autocomplete="username"
-            <%# FIX: aria-describedby links input to its error message %>
             aria-describedby="username-err"
             required
           >
         </div>
-        <%# FIX: id on error paragraph matches aria-describedby above;
-            role="alert" announces the error to screen readers when shown %>
         <p class="auth-err" id="username-err" role="alert">
           Please enter your username.
         </p>
       </div>
 
-      <!-- ── Password ── -->
+      <!-- Password -->
       <div class="auth-field">
         <label for="password">Password</label>
-        <%# FIX: has-toggle class shifts input padding so text clears the toggle button %>
         <div class="auth-input-wrap has-toggle">
           <i class="ti ti-lock icon" aria-hidden="true"></i>
           <input
@@ -68,7 +63,6 @@
             aria-describedby="password-err"
             required
           >
-          <%# FIX: aria-pressed communicates show/hide state; toggled by JS %>
           <button
             type="button"
             class="pw-toggle"
@@ -84,7 +78,6 @@
         </p>
       </div>
 
-      <%# FIX: icon inline style removed — .auth-submit i rule in CSS handles sizing %>
       <button type="submit" class="auth-submit">
         <i class="ti ti-login" aria-hidden="true"></i>
         Log in
@@ -105,7 +98,7 @@
 </div><!-- /.auth-page -->
 
 <script>
-  // ── Password show / hide toggle ──────────────────────────────────
+  // password show / hide toggle
   (function () {
     const btn  = document.getElementById('pw-tog');
     const inp  = document.getElementById('password');
@@ -118,7 +111,6 @@
       inp.type             = showing ? 'text'       : 'password';
       icon.className       = showing ? 'ti ti-eye-off' : 'ti ti-eye';
       this.setAttribute('aria-label',  showing ? 'Hide password' : 'Show password');
-      // FIX: update aria-pressed to communicate toggle state to screen readers
       this.setAttribute('aria-pressed', showing ? 'true' : 'false');
     });
   }());

@@ -17,7 +17,7 @@
     margin:0 auto;
   }
 
-  /* ── Page header ── */
+  /* Page header */
   .form-page-header { margin-bottom:32px; }
   .form-page-eyebrow {
     font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
@@ -32,7 +32,7 @@
     font-size:14px;color:var(--ink-3);margin:0;
   }
 
-  /* ── Progress steps ── */
+  /* Progress steps */
   .form-steps {
     display:flex;align-items:center;gap:0;
     margin-bottom:32px;
@@ -62,7 +62,7 @@
     .form-step-line{margin:0 4px;}
   }
 
-  /* ── Card ── */
+  /* Card */
   .form-card {
     background:var(--white);
     border:1px solid rgba(0,0,0,.07);
@@ -78,7 +78,7 @@
   }
   .form-section-title i { color:var(--ink-3); }
 
-  /* ── Fields ── */
+  /* Fields */
   .form-field { margin-bottom:20px; }
   .form-field:last-child { margin-bottom:0; }
   .form-field label {

@@ -3,7 +3,7 @@
 <section id="listingsPage">
   <div class="container">
 
-    <!-- ── Page Header ── -->
+    <!-- Page Header -->
     <div class="listings-header">
       <div>
         <h1 class="listings-title">
@@ -25,7 +25,7 @@
 
     <% if (savedListings.length > 0) { %>
 
-      <!-- ── Listings Grid ── -->
+      <!-- Listings Grid -->
       <div class="listings-grid" id="wishlistGrid">
 
         <% for (let listing of savedListings) { %>
@@ -114,7 +114,7 @@
 
     <% } else { %>
 
-      <!-- ── Empty state ── -->
+      <!-- Empty state -->
       <div class="listings-empty" id="emptyState">
         <div class="listings-empty-icon-wrapper">
           <i class="fa-regular fa-heart"></i>
@@ -155,7 +155,7 @@
     .then(function(data) {
       if (!data.liked) {
 
-        // ── Fade card out ──
+        // fade card out
         var card = document.getElementById('wish-' + listingId);
         if (card) {
           card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';

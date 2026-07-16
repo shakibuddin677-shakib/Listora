@@ -1,12 +1,19 @@
+
+
 const Listing = require("../models/listing");
 
-// GET /listings - supports search, category, maxPrice and sort query params
+/* ══════════════════════════════════════════════════════════════
+   INDEX  —  GET /listings
+   Supports: ?search=  ?category=  ?maxPrice=  ?sort=
+   ══════════════════════════════════════════════════════════════ */
 module.exports.index = async (req, res) => {
 
   const { search = "", category = "", maxPrice = "", sort = "" } = req.query;
 
+  // ── Build Mongoose filter ──────────────────────────────────
   const filter = {};
 
+  // Text search across title, location, country, description
   if (search.trim()) {
     const re = new RegExp(search.trim(), "i");
     filter.$or = [
@@ -17,24 +24,29 @@ module.exports.index = async (req, res) => {
     ];
   }
 
+  // Category filter (exact match, case-insensitive)
   if (category.trim()) {
     filter.category = new RegExp(`^${category.trim()}$`, "i");
   }
 
+  // Max price filter
   if (maxPrice !== "" && !isNaN(Number(maxPrice))) {
     filter.price = { $lte: Number(maxPrice) };
   }
 
-  let sortOption = { createdAt: -1 };
+  // ── Build sort option ──────────────────────────────────────
+  let sortOption = { createdAt: -1 };   // default: newest first
 
   if (sort === "price_asc")  sortOption = { price:  1 };
   if (sort === "price_desc") sortOption = { price: -1 };
   if (sort === "newest")     sortOption = { createdAt: -1 };
 
+  // ── Query DB ───────────────────────────────────────────────
   const allListings = await Listing.find(filter)
     .populate("reviews")
     .sort(sortOption);
 
+  // ── Render ─────────────────────────────────────────────────
   res.render("listings/index.ejs", {
     allListings,
     search,
@@ -46,10 +58,16 @@ module.exports.index = async (req, res) => {
   });
 };
 
+/* ══════════════════════════════════════════════════════════════
+   NEW FORM  —  GET /listings/new
+   ══════════════════════════════════════════════════════════════ */
 module.exports.renderNewForm = (req, res) => {
   res.render("listings/new.ejs");
 };
 
+/* ══════════════════════════════════════════════════════════════
+   SHOW  —  GET /listings/:id
+   ══════════════════════════════════════════════════════════════ */
 module.exports.showListing = async (req, res) => {
   const { id } = req.params;
 
@@ -68,6 +86,9 @@ module.exports.showListing = async (req, res) => {
   res.render("listings/show.ejs", { listing });
 };
 
+/* ══════════════════════════════════════════════════════════════
+   CREATE  —  POST /listings
+   ══════════════════════════════════════════════════════════════ */
 module.exports.createListing = async (req, res) => {
   const { path: url, filename } = req.file;
 
@@ -80,6 +101,9 @@ module.exports.createListing = async (req, res) => {
   res.redirect("/listings");
 };
 
+/* ══════════════════════════════════════════════════════════════
+   EDIT FORM  —  GET /listings/:id/edit
+   ══════════════════════════════════════════════════════════════ */
 module.exports.renderEditForm = async (req, res) => {
   const { id } = req.params;
   const listing = await Listing.findById(id);
@@ -89,7 +113,6 @@ module.exports.renderEditForm = async (req, res) => {
     return res.redirect("/listings");
   }
 
-  // smaller preview image on the edit page via cloudinary transform
   const originalImageUrl = listing.image.url.replace(
     "/upload",
     "/upload/h_300,w_250"
@@ -98,6 +121,9 @@ module.exports.renderEditForm = async (req, res) => {
   res.render("listings/edit.ejs", { listing, originalImageUrl });
 };
 
+/* ══════════════════════════════════════════════════════════════
+   UPDATE  —  PUT /listings/:id
+   ══════════════════════════════════════════════════════════════ */
 module.exports.updateListing = async (req, res) => {
   const { id } = req.params;
   const listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
@@ -111,6 +137,9 @@ module.exports.updateListing = async (req, res) => {
   res.redirect(`/listings/${id}`);
 };
 
+/* ══════════════════════════════════════════════════════════════
+   DELETE  —  DELETE /listings/:id
+   ══════════════════════════════════════════════════════════════ */
 module.exports.destroyListing = async (req, res) => {
   const { id } = req.params;
   await Listing.findByIdAndDelete(id);

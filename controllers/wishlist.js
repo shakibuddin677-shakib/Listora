@@ -1,15 +1,11 @@
-
 const User    = require("../models/user.js");
 const Listing = require("../models/listing.js");
 
-// ─────────────────────────────────────────────────────────────
 // GET /wishlist
-// Populate the logged-in user's wishlist with full listing data
-// ─────────────────────────────────────────────────────────────
 module.exports.getWishlist = async (req, res) => {
   const user = await User.findById(req.user._id).populate({
     path:     "wishlist",
-    populate: { path: "reviews" },   // needed for avg-rating calc in EJS
+    populate: { path: "reviews" }, // needed for avg rating calc in EJS
   });
 
   const savedListings = user.wishlist || [];
@@ -17,10 +13,7 @@ module.exports.getWishlist = async (req, res) => {
   res.render("listings/wishlist.ejs", { savedListings });
 };
 
-// ─────────────────────────────────────────────────────────────
-// POST /wishlist/toggle/:id
-// Add or remove a listing from wishlist — returns JSON
-// ─────────────────────────────────────────────────────────────
+// POST /wishlist/toggle/:id - toggles a listing in the user's wishlist and returns liked status as JSON
 module.exports.toggleWishlist = async (req, res) => {
   const { id } = req.params;
   const user   = await User.findById(req.user._id);

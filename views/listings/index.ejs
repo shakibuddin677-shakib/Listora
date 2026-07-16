@@ -204,7 +204,9 @@
 
 <script>
   /*
-   toggleLike — wishlist heart button
+   * toggleLike — wishlist heart button
+   * FIX 1: isLoggedIn is injected from EJS — guests are sent to /login
+   * FIX 2: Errors from the fetch are surfaced as a toast, not silently ignored
    */
   function toggleLike(btn, listingId, isLoggedIn) {
     // Redirect guests to login instead of showing fake feedback

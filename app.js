@@ -1,8 +1,6 @@
-
 if (process.env.NODE_ENV != "production") {
     require("dotenv").config();
 }
-
 
 const express = require("express");
 const app = express();
@@ -19,14 +17,12 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const User = require("./models/user.js");
 
-// Routes
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 const wishlistRouter = require("./routes/wishlist.js");
 
-/* ---------------- MongoDB Connection ---------------- */
-
+// connect to mongo atlas
 const dbUrl = process.env.ATLASDB_URL;
 
 async function main() {
@@ -50,13 +46,11 @@ main()
         console.log("DB Connection Error:", err);
     });
 
-/* ---------------- View Engine ---------------- */
-
+// view engine setup
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-/* ---------------- Middlewares ---------------- */
-
+// middlewares
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
@@ -65,15 +59,14 @@ app.engine("ejs", ejsMate);
 
 app.use(express.static(path.join(__dirname, "/public")));
 
-/* ---------------- Session Configuration ---------------- */
-
+// store sessions in mongo instead of memory
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     crypto: {
         secret: process.env.SECRET
     },
     touchAfter: 24 * 3600,
-    mongooseConnection: mongoose.connection, // existing connection use karo
+    mongooseConnection: mongoose.connection,
 });
 
 store.on("error", (err) => {
@@ -95,8 +88,7 @@ const sessionOptions = {
 app.use(session(sessionOptions));
 app.use(flash());
 
-/* ---------------- Passport Setup ---------------- */
-
+// passport auth setup
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -104,8 +96,7 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-/* ---------------- Global Variables ---------------- */
-
+// make flash messages and current user available in every view
 app.use((req, res, next) => {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
@@ -113,25 +104,17 @@ app.use((req, res, next) => {
     next();
 });
 
-/* ---------------- Routes ---------------- */
-
+// routes
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
 app.use("/", wishlistRouter);
 
-/* ---------------- Home Route ---------------- */
-
-app.get("/", (req, res) => {
-    res.redirect("/listings");
-});
-/* ---------------- Home Route ---------------- */
-
 app.get("/", (req, res) => {
     res.redirect("/listings");
 });
 
-//  Isko yahan add karo
+// temp route to debug cloudinary env vars on prod
 app.get("/test-cloudinary", (req, res) => {
     res.json({
         cloud_name: process.env.CLOUD_NAME,
@@ -141,16 +124,12 @@ app.get("/test-cloudinary", (req, res) => {
     });
 });
 
-/* ---------------- 404 Handler ---------------- */
-
-
+// 404 handler
 app.use((req, res, next) => {
     next(new ExpressError(404, "Page Not Found!"));
 });
 
-
-/* ---------------- Error Handler ---------------- */
-
+// central error handler
 app.use((err, req, res, next) => {
     console.error("ERROR:", err);
     console.error(err.stack);

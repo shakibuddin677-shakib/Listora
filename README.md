@@ -122,15 +122,20 @@ Listora is a full-stack MERN-style web application (Express + MongoDB + EJS) bui
 <td align="center" width="33%"><b>Home / Browse</b></td>
 <td align="center" width="33%"><b>Listing Details</b></td>
 <td align="center" width="33%"><b>Dark Mode</b></td>
+<td align="center" width="33%"><b>Edit Form
+</b></td>
 </tr>
 <tr>
-<td><img src="./screenshots/home.png" width="100%"/></td>
-<td><img src="./screenshots/details.png" width="100%"/></td>
-<td><img src="./screenshots/dark.png" width="100%"/></td>
+<td><img src="screenshots\Screenshot 2026-07-16 101536.png" width="100%"/></td>
+<td><img src="screenshots\WhatsApp Image 2026-07-16 at 10.20.14.jpeg" width="100%"/></td>
+<td><img src="screenshots\Screenshot 2026-07-16 101627.png" width="100%"/></td>
+<td><img src="screenshots\WhatsApp Image 2026-07-16 at 10.20.141.jpeg" width="100%"/></td>
 </tr>
 </table>
 
 </div>
+
+> 📝 Drop your screenshots into a `screenshots` folder at the project root using the filenames above — they'll render automatically.
 
 <br/>
 
